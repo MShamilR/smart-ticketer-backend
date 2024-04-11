@@ -1,0 +1,29 @@
+{
+  "name": "smart-ticketer-backend",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "db:generate": "drizzle-kit generate:pg --schema db/schema/* --out ./drizzle",
+    "db:migrate": "tsc ./migrate.ts && node ./migrate.js",
+    "db:migratetsx": "tsx ./migrate.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@neondatabase/serverless": "^0.9.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.30.4",
+    "express": "^4.19.1",
+    "nodemon": "^3.1.0",
+    "tsx": "^4.7.2"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.20.14"
+  }
+}

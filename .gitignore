@@ -1,0 +1,4 @@
+node_modules
+drizzle
+package-lock.json
+.env
