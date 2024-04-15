@@ -12,8 +12,9 @@ import { operators } from "./operators";
 
 export const buses = pgTable("buses", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
+  operatorId: integer("operator_id").references(() => operators.id),
   registrationPlate: varchar("registration_plate", { length: 10 }),
   routeNo: varchar("route_no", { length: 10 }),
-  operatorId: integer("operator_id").references(() => operators.id),
   stops: integer("stops"),
 });

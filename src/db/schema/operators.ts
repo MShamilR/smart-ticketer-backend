@@ -13,6 +13,7 @@ export const ownershipEnum = pgEnum("ownership", ["state", "private"]);
 
 export const operators = pgTable("operators", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
   ownership: ownershipEnum("ownership"),
   tradeName: varchar("trade_name", { length: 255 }),
   assignedDepot: varchar("assigned_depot", { length: 50 }),

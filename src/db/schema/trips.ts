@@ -6,7 +6,7 @@ import {
   uniqueIndex,
   varchar,
   real,
-  timestamp
+  timestamp,
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { buses } from "./buses";

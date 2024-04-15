@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   integer,
   pgEnum,
@@ -9,8 +10,8 @@ import {
   real,
   boolean,
 } from "drizzle-orm/pg-core";
-import { buses } from "./buses";
-import { operators } from "./operators";
+import { buses } from "./buses.ts";
+import { operators } from "./operators.ts";
 
 export const rolesEnum = pgEnum("role", [
   "passenger",
@@ -33,7 +34,16 @@ export const users = pgTable("users", {
     mobileNumber: string;
   }>(),
   creditBalance: real("credit_balance"),
-  busId: integer("bus_id").references(() => buses.id),
-  operatorId: integer("operator_id").references(() => operators.id),
   isActive: boolean("is_active"),
 });
+
+export const usersRelations = relations(users, ({ one }) => ({
+  bus: one(users, {
+    fields: [users.id],
+    references: [buses.userId],
+  }),
+  operator: one(users, {
+    fields: [users.id],
+    references: [operators.userId],
+  }),
+}));

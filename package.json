@@ -6,10 +6,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
+    "dev": "nodemon --exec node --trace-warnings --loader ts-node/esm ./src/index.ts",
     "db:generate": "drizzle-kit generate:pg --schema db/schema/* --out ./drizzle",
     "db:migrate": "tsc ./migrate.ts && node ./migrate.js",
-    "db:migratetsx": "tsx ./migrate.ts"
+    "db:migratetsx": "tsx ./migrate.ts",
+    "push": "drizzle-kit push:pg",
+    "drop": "drizzle-kit drop"
   },
   "keywords": [],
   "author": "",
@@ -19,11 +21,15 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.30.4",
-    "express": "^4.19.1",
-    "nodemon": "^3.1.0",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "tsx": "^4.7.2"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.20.14"
+    "@types/express": "^4.17.21",
+    "drizzle-kit": "^0.20.14",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   }
 }
