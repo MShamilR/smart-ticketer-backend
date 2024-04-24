@@ -1,6 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
-import schema from "./schema";
+import schema from "./schema/index";
 import "dotenv/config";
 
 if (!process.env.DATABASE_URL) {

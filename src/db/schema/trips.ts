@@ -8,7 +8,6 @@ import {
   real,
   timestamp,
 } from "drizzle-orm/pg-core";
-import { users } from "./users";
 import { buses } from "./buses";
 
 export const trips = pgTable("trips", {

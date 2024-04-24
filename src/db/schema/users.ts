@@ -10,8 +10,8 @@ import {
   real,
   boolean,
 } from "drizzle-orm/pg-core";
-import { buses } from "./buses.ts";
-import { operators } from "./operators.ts";
+import { buses } from "./buses";
+import { operators } from "./operators";
 
 export const rolesEnum = pgEnum("role", [
   "passenger",
@@ -24,7 +24,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   firstName: varchar("first_name", { length: 100 }),
   lastName: varchar("last_name", { length: 100 }),
-  email: varchar("email", { length: 100 }).unique(),
+  email: varchar("email", { length: 100 }).unique().notNull(),
   passwordHash: varchar("password_hash", { length: 256 }),
   refreshToken: varchar("refresh_token", { length: 256 }),
   role: rolesEnum("role"),
@@ -38,11 +38,11 @@ export const users = pgTable("users", {
 });
 
 export const usersRelations = relations(users, ({ one }) => ({
-  bus: one(users, {
+  bus: one(buses, {
     fields: [users.id],
     references: [buses.userId],
   }),
-  operator: one(users, {
+  operator: one(operators, {
     fields: [users.id],
     references: [operators.userId],
   }),

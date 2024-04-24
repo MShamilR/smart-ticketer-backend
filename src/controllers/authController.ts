@@ -1,12 +1,19 @@
 import bcrypt from "bcryptjs";
-import { errorHandler } from "../utils/errorHandler.js";
+import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { eq } from "drizzle-orm";
-import { db } from "../db/setup.ts";
-import { users } from "../db/schema/users.ts";
+import { db } from "../db/setup";
+import { users } from "../db/schema/users";
+import { BadRequestError } from "core/apiError";
 
-export const signup = async (req, res, next) => {
-  const { firstname, lastname, email, password, role } = req.body;
+type NewUser = typeof users.$inferInsert;
+
+export const signup = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { firstName, lastName, email, password, role } = req.body;
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(password.toString(), salt);
   try {
@@ -14,15 +21,17 @@ export const signup = async (req, res, next) => {
       where: eq(users.email, email),
     });
     if (existingUser) {
-      return next(
-        errorHandler(409, "EMAIL_ALREADY_EXISTS", "Email already in use")
-      );
+      throw new BadRequestError;
+      
+      // return next(
+      //   errorHandler(409, "EMAIL_ALREADY_EXISTS", "Email already in use")
+      // );
     }
-    const newUser = {
-      firstname,
-      lastname,
+    const newUser: NewUser = {
+      firstName,
+      lastName,
       email,
-      password: hashedPassword,
+      passwordHash: hashedPassword,
       role,
     };
     db.insert(users).values(newUser);

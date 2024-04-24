@@ -1,10 +1,10 @@
-import * as buses from "./buses.ts";
-import * as fares from "./fares.ts";
-import * as operators from "./operators.ts";
-import * as tickets from "./tickets.ts";
-import * as topups from "./topups.ts";
-import * as trips from "./trips.ts";
-import * as users from "./users.ts";
+import * as buses from "./buses";
+import * as fares from "./fares";
+import * as operators from "./operators";
+import * as tickets from "./tickets";
+import * as topups from "./topups";
+import * as trips from "./trips";
+import * as users from "./users";
 
 const schema = {
   ...buses,
