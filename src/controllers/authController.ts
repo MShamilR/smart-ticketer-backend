@@ -1,10 +1,11 @@
+import { drizzle } from "drizzle-orm/neon-http";
 import bcrypt from "bcryptjs";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { eq } from "drizzle-orm";
 import { db } from "../db/setup";
 import { users } from "../db/schema/users";
-import { BadRequestError } from "core/apiError";
+import { BadRequestError } from "../core/apiError";
 
 type NewUser = typeof users.$inferInsert;
 
@@ -21,8 +22,8 @@ export const signup = async (
       where: eq(users.email, email),
     });
     if (existingUser) {
-      throw new BadRequestError;
-      
+      throw new BadRequestError();
+
       // return next(
       //   errorHandler(409, "EMAIL_ALREADY_EXISTS", "Email already in use")
       // );

@@ -5,7 +5,7 @@ import {
   ApiError,
   InternalError,
   ErrorType,
-} from "core/apiError";
+} from "./core/apiError";
 import "dotenv/config";
 
 const app = express();
