@@ -23,7 +23,6 @@ export const signup = async (
     });
     if (existingUser) {
       throw new BadRequestError();
-
       // return next(
       //   errorHandler(409, "EMAIL_ALREADY_EXISTS", "Email already in use")
       // );

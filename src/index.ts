@@ -21,21 +21,24 @@ app.use("/api/auth", authRoute);
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof ApiError) {
+    console.log("Hi");
+    console.log(err);
     ApiError.handle(err, res);
-    //if (err.type === ErrorType.INTERNAL)
-      // Logger.error(
-      //   `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`
-      // );
-  //} else {
-    // Logger.error(
-    //   `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`
-    // );
-    // Logger.error(err);
-    // if (environment === "development") {
-    //   return res.status(500).send(err);
-    // }
+  } else {
     ApiError.handle(new InternalError(), res);
   }
+  //if (err.type === ErrorType.INTERNAL)
+  // Logger.error(
+  //   `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`
+  // );
+  //} else {
+  // Logger.error(
+  //   `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`
+  // );
+  // Logger.error(err);
+  // if (environment === "development") {
+  //   return res.status(500).send(err);
+  // }
 });
 
 // Check: Wouldn't need this middleware

@@ -25,7 +25,8 @@ export enum ErrorType {
 
 export abstract class ApiError extends Error {
   constructor(public type: ErrorType, public message: string = "error") {
-    super(type);
+    super(message);
+    Object.setPrototypeOf(this, ApiError.prototype);
   }
 
   public static handle(err: ApiError, res: Response): Response {
@@ -72,6 +73,7 @@ export class InternalError extends ApiError {
 export class BadRequestError extends ApiError {
   constructor(message = "Bad Request") {
     super(ErrorType.BAD_REQUEST, message);
+    Object.setPrototypeOf(this, BadRequestError.prototype);
   }
 }
 
