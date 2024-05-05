@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { eq } from "drizzle-orm";
 import { db } from "../db/setup";
 import { users } from "../db/schema/users";
-import { BadRequestError } from "../core/apiError";
+import { BadRequestError, AuthFailureError } from "../core/apiError";
 import "dotenv/config";
 import { SuccessResponse } from "core/apiResponse";
 
@@ -58,6 +58,9 @@ const handleSignIn = async (
       refreshToken,
     }).send(res);
   } else {
-    res.sendStatus(401);
+    throw new AuthFailureError(
+      "INVALID_CREDENTIALS",
+      "Please enter the correct password"
+    );
   }
 };

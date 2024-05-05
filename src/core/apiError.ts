@@ -63,8 +63,8 @@ export abstract class ApiError extends Error {
 }
 
 export class AuthFailureError extends ApiError {
-  constructor(message = "Invalid Credentials") {
-    super(ErrorType.UNAUTHORIZED, message);
+  constructor(message = "Invalid Credentials", code: string) {
+    super(ErrorType.UNAUTHORIZED, code, message);
   }
 }
 
