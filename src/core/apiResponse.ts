@@ -10,6 +10,7 @@ enum StatusCode {
 
 enum ResponseStatus {
   SUCCESS = 200,
+  CREATED = 201,
   BAD_REQUEST = 400,
   UNAUTHORIZED = 401,
   FORBIDDEN = 403,
@@ -80,8 +81,14 @@ export class BadRequestResponse extends ApiResponse {
 }
 
 export class InternalErrorResponse extends ApiResponse {
-  constructor(code: string, message = "Internal Error") {
+  constructor(code = "INTERNAL_ERROR", message = "Internal Error") {
     super(ResponseStatus.INTERNAL_ERROR, code, message);
+  }
+}
+
+export class CreatedMsgResponse extends ApiResponse {
+  constructor(code: string, message: string) {
+    super(ResponseStatus.CREATED, code, message);
   }
 }
 

@@ -24,7 +24,11 @@ export enum ErrorType {
 }
 
 export abstract class ApiError extends Error {
-  constructor(public type: ErrorType, public message: string = "error") {
+  constructor(
+    public type: ErrorType,
+    public code: string,
+    public message: string = "error"
+  ) {
     super(message);
     Object.setPrototypeOf(this, ApiError.prototype);
   }
@@ -34,25 +38,25 @@ export abstract class ApiError extends Error {
       case ErrorType.BAD_TOKEN:
       case ErrorType.TOKEN_EXPIRED:
       case ErrorType.UNAUTHORIZED:
-        return new AuthFailureResponse(err.message).send(res);
+        return new AuthFailureResponse(err.code, err.message).send(res);
       case ErrorType.ACCESS_TOKEN:
-        return new AccessTokenErrorResponse(err.message).send(res);
+        return new AccessTokenErrorResponse(err.code, err.message).send(res);
       case ErrorType.INTERNAL:
-        return new InternalErrorResponse(err.message).send(res);
+        return new InternalErrorResponse(err.code, err.message).send(res);
       case ErrorType.NOT_FOUND:
       case ErrorType.NO_ENTRY:
       case ErrorType.NO_DATA:
-        return new NotFoundResponse(err.message).send(res);
+        return new NotFoundResponse(err.code, err.message).send(res);
       case ErrorType.BAD_REQUEST:
-        return new BadRequestResponse(err.message).send(res);
+        return new BadRequestResponse(err.code, err.message).send(res);
       case ErrorType.FORBIDDEN:
-        return new ForbiddenResponse(err.message).send(res);
+        return new ForbiddenResponse(err.code, err.message).send(res);
       default: {
         let message = err.message;
         //Check
         // Do not send failure message in production as it may send sensitive data
         //if (environment === "production") message = "Something wrong happened.";
-        return new InternalErrorResponse(message).send(res);
+        return new InternalErrorResponse().send(res);
       }
     }
   }
@@ -71,8 +75,8 @@ export class InternalError extends ApiError {
 }
 
 export class BadRequestError extends ApiError {
-  constructor(message = "Bad Request") {
-    super(ErrorType.BAD_REQUEST, message);
+  constructor(code: string, message = "Bad Request") {
+    super(ErrorType.BAD_REQUEST, code, message);
     Object.setPrototypeOf(this, BadRequestError.prototype);
   }
 }

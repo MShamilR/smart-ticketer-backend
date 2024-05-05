@@ -25,7 +25,7 @@ export const users = pgTable("users", {
   firstName: varchar("first_name", { length: 100 }),
   lastName: varchar("last_name", { length: 100 }),
   email: varchar("email", { length: 100 }).unique().notNull(),
-  passwordHash: varchar("password_hash", { length: 256 }),
+  passwordHash: varchar("password_hash", { length: 256 }).notNull(),
   refreshToken: varchar("refresh_token", { length: 256 }),
   role: rolesEnum("role"),
   emergencyContact: jsonb("emergency_contact").$type<{
