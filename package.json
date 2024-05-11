@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon --exec node --trace-warnings --loader ts-node/esm ./src/index.ts",
-    "db:generate": "drizzle-kit generate:pg --schema db/schema/* --out ./drizzle",
+    "db:generate": "drizzle-kit generate:pg --schema ./src/db/schema/* --out ./drizzle",
     "db:migrate": "tsc ./migrate.ts && node ./migrate.js",
     "db:migratetsx": "tsx ./migrate.ts",
     "push": "drizzle-kit push:pg",

@@ -6,8 +6,8 @@
   },
   "compilerOptions": {
     "baseUrl": "./src",
-    "target": "ES5",
-    "module": "ES6",
+    "target": "esnext",
+    "module": "esnext",
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

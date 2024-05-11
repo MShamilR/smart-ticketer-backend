@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
-import authRoute from "./routes/authRoute";
+import userRoute from "./routes/userRoute";
 import {
   NotFoundError,
   ApiError,
@@ -13,7 +13,12 @@ const app = express();
 app.use(express.json());
 //app.use(cookieParser());
 
-app.use("/api/auth", authRoute);
+// app.use((req, res, next) => {
+//   req.url = "/api" + req.url;
+//   next();
+// });
+
+app.use("/v1.0/user", userRoute);
 // app.use("/api/user", userRoute);
 // app.use("/api/recipe", recipeRoute);
 
@@ -39,17 +44,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   //   return res.status(500).send(err);
   // }
 });
-
-// Check: Wouldn't need this middleware
-//   app.use((err, req, res, next) => {
-//   const statusCode = err.statusCode || 500;
-//   const message = err.message || "Internal server error";
-//   return res.status(statusCode).json({
-//     success: false,
-//     message,
-//     statusCode,
-//   });
-// });
 
 app.listen(process.env.PORT, () => {
   console.log(`smart-ticketer-backend listening on port ${process.env.PORT}`);

@@ -1,4 +1,5 @@
 node_modules
 drizzle
 package-lock.json
+temp.ts
 .env

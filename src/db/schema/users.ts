@@ -16,12 +16,13 @@ import { operators } from "./operators";
 export const rolesEnum = pgEnum("role", [
   "passenger",
   "ticketer",
-  "bus_administrator",
+  "bus_operator",
   "app_administrator",
 ]);
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
+  token: varchar("token").unique().notNull(),
   firstName: varchar("first_name", { length: 100 }),
   lastName: varchar("last_name", { length: 100 }),
   email: varchar("email", { length: 100 }).unique().notNull(),

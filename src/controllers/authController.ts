@@ -5,8 +5,8 @@ import { eq } from "drizzle-orm";
 import { db } from "../db/setup";
 import { users } from "../db/schema/users";
 import { BadRequestError, AuthFailureError } from "../core/apiError";
-import "dotenv/config";
 import { SuccessResponse } from "core/apiResponse";
+import "dotenv/config";
 
 const handleSignIn = async (
   req: Request,
