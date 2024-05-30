@@ -12,13 +12,18 @@ import {
 } from "drizzle-orm/pg-core";
 import { buses } from "./buses";
 import { operators } from "./operators";
+import createEnumObject from "../../utils/enumGenerator";
 
-export const rolesEnum = pgEnum("role", [
-  "passenger",
-  "ticketer",
-  "bus_operator",
-  "app_administrator",
-]);
+const rolesArr = [
+  "PASSENGER",
+  "TICKETER",
+  "BUS_OPERATOR",
+  "APP_ADMINISTRATOR",
+] as const;
+
+export const Roles = createEnumObject(rolesArr);
+
+export const rolesEnum = pgEnum("role", rolesArr);
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -36,6 +41,7 @@ export const users = pgTable("users", {
   }>(),
   creditBalance: real("credit_balance"),
   isActive: boolean("is_active"),
+  isIncomplete: boolean("is_incomplete"),
 });
 
 export const usersRelations = relations(users, ({ one }) => ({

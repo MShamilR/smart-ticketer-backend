@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import userRoute from "./routes/userRoute";
+import authRoute from "./routes/authRoute";
 import {
   NotFoundError,
   ApiError,
@@ -19,6 +20,7 @@ app.use(express.json());
 // });
 
 app.use("/v1.0/user", userRoute);
+app.use("/v1.0/auth", authRoute);
 // app.use("/api/user", userRoute);
 // app.use("/api/recipe", recipeRoute);
 

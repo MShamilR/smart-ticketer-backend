@@ -22,8 +22,8 @@ enum ResponseStatus {
 abstract class ApiResponse {
   constructor(
     protected status: ResponseStatus, // http status code
-    protected code: string,
-    protected message: string // protected timestamp: Date
+    protected code: string, 
+    protected message: string
   ) {}
 
   protected prepare<T extends ApiResponse>(
