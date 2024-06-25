@@ -1,4 +1,5 @@
 import * as buses from "./buses";
+import * as emails from "./emails";
 import * as fares from "./fares";
 import * as operators from "./operators";
 import * as tickets from "./tickets";
@@ -14,6 +15,7 @@ const schema = {
   ...topups,
   ...trips,
   ...users,
+  ...emails,
 };
 
 export default schema;
