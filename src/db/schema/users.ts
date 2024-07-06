@@ -14,16 +14,16 @@ import { buses } from "./buses";
 import { operators } from "./operators";
 import createEnumObject from "../../utils/enumGenerator";
 
-const rolesArr = [
+export const appRoles = [
   "PASSENGER",
   "TICKETER",
   "BUS_OPERATOR",
   "APP_ADMINISTRATOR",
 ] as const;
 
-export const Roles = createEnumObject(rolesArr);
+export const Roles = createEnumObject(appRoles);
 
-export const rolesEnum = pgEnum("role", rolesArr);
+export const rolesEnum = pgEnum("role", appRoles);
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),

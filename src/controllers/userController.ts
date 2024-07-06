@@ -40,7 +40,7 @@ const dispatchVerificationEmail = (email: Address[]) => {
     }
   );
 
-  const verificationLink = `${process.env.BASE_URL}/api/v1.0/user/email/verify?token=${verificationToken}`;
+  const verificationLink = `${process.env.BASE_URL}/v1.0/user/email/verify?token=${verificationToken}`;
   const mailOptions = {
     from: `"BusPay" <${process.env.EMAIL_USERNAME}>`,
     to: email,
@@ -76,7 +76,11 @@ export const handleSignUpEmail = async (
 
     dispatchVerificationEmail(email);
 
-    return new SuccessMsgResponse("VERIFICATION_LINK_DISPATCHED", "Click on the link to proceed")
+return new SuccessMsgResponse(
+  "VERIFICATION_LINK_DISPATCHED",
+  "Click on the link to proceed"
+).send(res);;
+    
   } catch (error) {
     console.log(error);
     next(error);

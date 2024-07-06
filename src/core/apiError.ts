@@ -88,8 +88,8 @@ export class NotFoundError extends ApiError {
 }
 
 export class ForbiddenError extends ApiError {
-  constructor(message = "Permission denied") {
-    super(ErrorType.FORBIDDEN, message);
+  constructor(message = "Permission denied", code: string) {
+    super(ErrorType.FORBIDDEN, code, message);
   }
 }
 
