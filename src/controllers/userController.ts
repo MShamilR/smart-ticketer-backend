@@ -76,11 +76,10 @@ export const handleSignUpEmail = async (
 
     dispatchVerificationEmail(email);
 
-return new SuccessMsgResponse(
-  "VERIFICATION_LINK_DISPATCHED",
-  "Click on the link to proceed"
-).send(res);;
-    
+    return new SuccessMsgResponse(
+      "VERIFICATION_LINK_DISPATCHED",
+      "Click on the link to proceed"
+    ).send(res);
   } catch (error) {
     console.log(error);
     next(error);
@@ -121,11 +120,15 @@ export const handleVerifyEmail = async (
         .values(verifiedEmail)
         .returning();
 
-      new SuccessResponse("EMAIL_VERIFIED", "Fill missing details to register account", {
-        verified: true,
-        uuid: response[0].id,
-        email: response[0].email,
-      }).send(res);
+      new SuccessResponse(
+        "EMAIL_VERIFIED",
+        "Fill missing details to register account",
+        {
+          verified: true,
+          uuid: response[0].id,
+          email: response[0].email,
+        }
+      ).send(res);
     }
   );
 };
@@ -184,12 +187,6 @@ export const handleCreateUser = async (
       throw new BadRequestError("INVALID_UUID", "Invalid verification uuid");
     }
 
-    // if (!EmailValidator.validate(email)) {
-    //   throw new BadRequestError("INVALID_EMAIL", "Use a valid email address");
-    // }
-
-    // dispatchVerificationEmail(email);
-
     return new CreatedMsgResponse(
       "USER_CREATED",
       "User created successfully"
@@ -199,9 +196,3 @@ export const handleCreateUser = async (
     next(error);
   }
 };
-
-// export const verifyUser = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {};

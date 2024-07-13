@@ -13,6 +13,7 @@ import {
 import { buses } from "./buses";
 import { operators } from "./operators";
 import createEnumObject from "../../utils/enumGenerator";
+import { ticketers } from "./ticketers";
 
 export const appRoles = [
   "PASSENGER",
@@ -42,15 +43,22 @@ export const users = pgTable("users", {
   creditBalance: real("credit_balance"),
   isActive: boolean("is_active"),
   isIncomplete: boolean("is_incomplete"),
+  ticketerId: integer("ticketer_id"),
+  operatorId: integer("operator_id"),
 });
 
+// export const usersRelations = relations(users, ({ many }) => ({
+//   operators: many(operators),
+//   ticketers: many(ticketers),
+// }));
+
 export const usersRelations = relations(users, ({ one }) => ({
-  bus: one(buses, {
-    fields: [users.id],
-    references: [buses.userId],
+  ticketer: one(ticketers, {
+    fields: [users.ticketerId],
+    references: [ticketers.id],
   }),
   operator: one(operators, {
-    fields: [users.id],
-    references: [operators.userId],
+    fields: [users.operatorId],
+    references: [operators.id],
   }),
 }));

@@ -6,13 +6,14 @@ import {
   ForbiddenError,
   BadRequestError,
 } from "core/apiError";
+import { ProtectedRequest } from "types/app-requests";
 
 // Test status: not tested
 
 type AuthenticatedRole = (typeof appRoles)[number];
 
 export const authorize = (roles: AuthenticatedRole[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: ProtectedRequest, res: Response, next: NextFunction) => {
     const token = req.headers["authorization"]?.split(" ")[1];
     if (!token) {
       throw new BadRequestError(
@@ -48,6 +49,11 @@ export const authorize = (roles: AuthenticatedRole[]) => {
               "You don't have permission to access this endpoint"
             );
           }
+
+          req.user = {
+            email: decoded.email,
+            role: decoded.role,
+          };
 
           next();
         }
