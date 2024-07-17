@@ -14,6 +14,7 @@ import * as EmailValidator from "email-validator";
 import { Address } from "nodemailer/lib/mailer";
 import { SuccessResponse } from "../core/apiResponse";
 
+
 type NewUser = typeof users.$inferInsert;
 type VerifiedEmail = typeof emails.$inferInsert;
 
@@ -109,6 +110,7 @@ export const handleVerifyEmail = async (
           );
         }
       }
+
       const decoded = decodedToken as { email: string };
 
       const verifiedEmail: VerifiedEmail = {

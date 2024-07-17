@@ -41,7 +41,7 @@ export const handleSignIn = async (
           },
         },
         process.env.ACCESS_TOKEN_SECRET!,
-        { expiresIn: "30s" }
+        { expiresIn: "1d" }
       );
       const refreshToken = jwt.sign(
         { email: matchedUser.email },

@@ -6,5 +6,5 @@ interface User {
 }
 
 export interface ProtectedRequest extends Request {
-  user: User;
+  user?: User;
 }
