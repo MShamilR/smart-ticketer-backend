@@ -1,4 +1,3 @@
-import { operatorsRelations } from "./../db/schema/operators";
 import { NextFunction, Request, Response } from "express";
 import { ProtectedRequest } from "types/app-requests";
 import { db } from "../db/setup";
@@ -7,7 +6,6 @@ import { users } from "../db/schema/users";
 import { buses } from "../db/schema/buses";
 import { BadRequestError } from "../core/apiError";
 import { SuccessResponse } from "../core/apiResponse";
-import { promisify } from "util";
 
 type NewBus = typeof buses.$inferInsert;
 
@@ -17,7 +15,7 @@ export const handleRegisterBus = async (
   next: NextFunction
 ) => {
   try {
-    const { email, role } = req.user!;
+    const { id, email, role } = req.user!;
     const { registrationPlate, routeNo, stops } = req.body;
     if (!registrationPlate || !routeNo || !stops) {
       throw new BadRequestError(
@@ -33,6 +31,7 @@ export const handleRegisterBus = async (
         operator: true,
       },
     });
+
     const userId = authorisedUser?.id;
     const operatorId = authorisedUser?.operatorId;
 

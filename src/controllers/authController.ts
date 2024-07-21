@@ -36,6 +36,7 @@ export const handleSignIn = async (
       const accessToken = jwt.sign(
         {
           userInfo: {
+            id: matchedUser.id,
             email: matchedUser.email,
             role: matchedUser.role,
           },

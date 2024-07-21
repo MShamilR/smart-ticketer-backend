@@ -1,3 +1,4 @@
+import { integer } from "drizzle-orm/pg-core";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { appRoles } from "../db/schema/users";
@@ -7,18 +8,10 @@ import {
   BadRequestError,
 } from "../core/apiError";
 import { ProtectedRequest } from "types/app-requests";
-import { promisify } from "util";
 
-// Test status: not tested
+// Test status: tested
 
 type AuthenticatedRole = (typeof appRoles)[number];
-
-// export const getAccessToken = (authorization?: string) => {
-//   if (!authorization) throw new AuthFailureError("Invalid Authorization");
-//   if (!authorization.startsWith("Bearer "))
-//     throw new AuthFailureError("Invalid Authorization");
-//   return authorization.split(" ")[1];
-// };
 
 export const authorize = (roles: AuthenticatedRole[]) => {
   return (req: ProtectedRequest, res: Response, next: NextFunction) => {
@@ -56,9 +49,9 @@ export const authorize = (roles: AuthenticatedRole[]) => {
           }
           console.log(decodedToken);
           const {
-            userInfo: { email, role },
+            userInfo: { id, email, role },
           } = decodedToken as {
-            userInfo: { email: string; role: string };
+            userInfo: { id: number; email: string; role: string };
           };
           console.log(role);
 
@@ -70,6 +63,7 @@ export const authorize = (roles: AuthenticatedRole[]) => {
           }
 
           req.user = {
+            id,
             email,
             role,
           };
