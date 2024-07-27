@@ -1,13 +1,21 @@
+import { operators } from "./../db/schema/operators";
 import { NextFunction, Request, Response } from "express";
 import { ProtectedRequest } from "types/app-requests";
 import { db } from "../db/setup";
 import { eq } from "drizzle-orm";
-import { users } from "../db/schema/users";
-import { BadRequestError } from "../core/apiError";
+import { users, Roles } from "../db/schema/users";
+import { invites } from "../db/schema/invites";
+import {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+} from "../core/apiError";
 import { SuccessMsgResponse } from "../core/apiResponse";
-import { invites } from "db/schema/invites";
+import { ticketers } from "db/schema/ticketers";
+import { inviteStatus } from "../db/schema/invites";
 
 type NewInvite = typeof invites.$inferInsert;
+type NewTicketer = typeof ticketers.$inferInsert;
 
 export const handleInviteTicketers = async (
   req: ProtectedRequest,
@@ -16,7 +24,7 @@ export const handleInviteTicketers = async (
 ) => {
   try {
     const { id } = req.user!; // decoded from token
-    const { inviteeId } = req.body; //single user per request
+    const { inviteeId } = req.body; // single user per request
 
     const authorisedUser = await db.query.users.findFirst({
       where: eq(users.id, id),
@@ -30,7 +38,7 @@ export const handleInviteTicketers = async (
     const newInvite: NewInvite = {
       operatorId,
       userId: inviteeId,
-      isAccepted: false,
+      status: inviteStatus.PENDING,
     };
 
     await db.insert(invites).values(newInvite);
@@ -50,6 +58,7 @@ export const handleAcceptTicketer = async (
 ) => {
   try {
     const { id } = req.user!; // decoded from token
+    const inviteId = Number(req.params.inviteId);
     const { inviteeId } = req.body; //single user per request
 
     const authorisedUser = await db.query.users.findFirst({
@@ -59,18 +68,53 @@ export const handleAcceptTicketer = async (
       },
     });
 
-    const operatorId = authorisedUser?.operatorId;
+    const foundInvite = await db.query.invites.findFirst({
+      where: eq(invites.id, inviteId),
+      with: { user: true },
+    });
 
-    const newInvite: NewInvite = {
-      operatorId,
-      userId: inviteeId,
-      isAccepted: false,
+    console.log(foundInvite);
+
+    if (!foundInvite) {
+      throw new NotFoundError(
+        "INVITE_NOT_FOUND",
+        "No matching invitation found"
+      );
+    } else if (authorisedUser?.id !== foundInvite.userId) {
+      throw new ForbiddenError(
+        "USER_MISMATCH",
+        "Invitation doesn't match authenticated user"
+      );
+    } else if (foundInvite.status === "ACCEPTED") {
+      throw new BadRequestError(
+        "ALREADY_ACCEPTED",
+        "Invitation has already been accepted"
+      );
+    } else if (foundInvite.status === "REJECTED") {
+      throw new BadRequestError(
+        "ALREADY_REJECTED",
+        "Invitation has already been rejected"
+      );
+    }
+
+    console.log(foundInvite);
+
+    const NewTicketer: NewTicketer = {
+      operatorId: foundInvite.operatorId,
+      userId: foundInvite.userId,
     };
 
-    await db.insert(invites).values(newInvite);
+    await db.transaction(async (tx) => {
+      await tx.insert(ticketers).values(NewTicketer);
+      await tx
+        .update(users)
+        .set({ role: Roles.TICKETER })
+        .where(eq(users.id, foundInvite.userId!));
+    });
+
     return new SuccessMsgResponse(
-      "TICKETER_INVITED",
-      "Ticketer invitation has been sent to user"
+      "INVITATION_ACCEPTED",
+      "You have now been assigned as a ticketer"
     ).send(res);
   } catch (error) {
     next(error);

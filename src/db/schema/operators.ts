@@ -23,5 +23,5 @@ export const operators = pgTable("operators", {
 
 export const operatorsRelations = relations(operators, ({ many }) => ({
   users: many(users),
-  ticketers: many(ticketers)
+  ticketers: many(ticketers),
 }));

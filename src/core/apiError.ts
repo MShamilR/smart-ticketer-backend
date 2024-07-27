@@ -82,13 +82,13 @@ export class BadRequestError extends ApiError {
 }
 
 export class NotFoundError extends ApiError {
-  constructor(message = "Not Found") {
-    super(ErrorType.NOT_FOUND, message);
+  constructor(code: string, message = "Not Found") {
+    super(ErrorType.NOT_FOUND, code, message);
   }
 }
 
 export class ForbiddenError extends ApiError {
-  constructor(message = "Permission denied", code: string) {
+  constructor(code: string, message = "Permission denied") {
     super(ErrorType.FORBIDDEN, code, message);
   }
 }

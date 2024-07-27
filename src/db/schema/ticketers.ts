@@ -2,15 +2,14 @@ import { relations } from "drizzle-orm";
 import { integer, pgTable, serial } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { operators } from "./operators";
-import { buses } from "./buses";
 
 // A ticketer has one operator (employer) || An operator (employer) has many ticketers
-// A ticketer is only assign to one bus || Many ticketers can be assigned to one bus
+// A ticketer could be work in many buses, but limited to just one operator
 
 export const ticketers = pgTable("ticketers", {
   id: serial("id").primaryKey(),
   operatorId: integer("operator_id").references(() => operators.id),
-  busId: integer("bus_id").references(() => buses.id),
+  userId: integer("user_id").references(() => users.id),
 });
 
 export const ticketersRelations = relations(ticketers, ({ one, many }) => ({
@@ -18,9 +17,9 @@ export const ticketersRelations = relations(ticketers, ({ one, many }) => ({
     fields: [ticketers.operatorId],
     references: [operators.id],
   }),
-  buses: one(buses, {
-    fields: [ticketers.busId],
-    references: [buses.id],
+  user: one(users, {
+    fields: [ticketers.userId],
+    references: [users.id],
   }),
-  ticketers: many(ticketers),
+  //ticketers: many(ticketers),
 }));

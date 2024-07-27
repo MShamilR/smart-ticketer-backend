@@ -1,4 +1,3 @@
-
 import * as buses from "./buses";
 import * as emails from "./emails";
 import * as fares from "./fares";
@@ -7,7 +6,8 @@ import * as tickets from "./tickets";
 import * as topups from "./topups";
 import * as trips from "./trips";
 import * as users from "./users";
-import * as ticketers from "./ticketers"
+import * as ticketers from "./ticketers";
+import * as invites from "./invites";
 
 const schema = {
   ...buses,
@@ -18,7 +18,8 @@ const schema = {
   ...trips,
   ...users,
   ...emails,
-  ...ticketers
+  ...ticketers,
+  ...invites,
 };
 
 export default schema;
