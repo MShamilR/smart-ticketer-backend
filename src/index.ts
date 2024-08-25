@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import userRoute from "./routes/userRoute";
 import authRoute from "./routes/authRoute";
 import busRoute from "./routes/busRoute";
+import tripRoute from "./routes/tripRoute";
 import {
   NotFoundError,
   ApiError,
@@ -13,18 +14,22 @@ import "dotenv/config";
 const app = express();
 
 app.use(express.json());
-//app.use(cookieParser());
 
-// app.use((req, res, next) => {
-//   req.url = "/api" + req.url;
-//   next();
-// });
+const publicRouter = express.Router();
+const authRouter = express.Router();
 
-app.use("/v1.0/user", userRoute);
-app.use("/v1.0/auth", authRoute);
-app.use("/v1.0/auth/bus", busRoute);
-// app.use("/api/user", userRoute);
-// app.use("/api/recipe", recipeRoute);
+// Public Routes
+publicRouter.use("/user", userRoute);
+
+// Authorization / Authenticated Routes
+authRouter.use("/", authRoute);
+authRouter.use("/bus", busRoute);
+authRouter.use("/user", userRoute);
+authRouter.use("/trip", tripRoute);
+authRouter.use("/ticket", tripRoute);
+
+app.use("/api/v1.0", publicRouter);
+app.use("/api/v1.0/auth", authRouter);
 
 // Middleware Error Handler
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -35,18 +40,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   } else {
     ApiError.handle(new InternalError(), res);
   }
-  //if (err.type === ErrorType.INTERNAL)
-  // Logger.error(
-  //   `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`
-  // );
-  //} else {
-  // Logger.error(
-  //   `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`
-  // );
-  // Logger.error(err);
-  // if (environment === "development") {
-  //   return res.status(500).send(err);
-  // }
 });
 
 app.listen(process.env.PORT, () => {

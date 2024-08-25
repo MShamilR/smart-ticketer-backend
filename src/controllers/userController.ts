@@ -13,7 +13,9 @@ import nodemailer from "nodemailer";
 import * as EmailValidator from "email-validator";
 import { Address } from "nodemailer/lib/mailer";
 import { SuccessResponse } from "../core/apiResponse";
+import createLogger from "../utils/logger";
 
+const logger = createLogger("user-controller");
 
 type NewUser = typeof users.$inferInsert;
 type VerifiedEmail = typeof emails.$inferInsert;
@@ -26,7 +28,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const generateToken = (current: number): string => {
+const generateTerminal = (current: number): string => {
   const prefix = "T";
   const charLength = 8;
   return generateId(prefix, charLength, current);
@@ -62,8 +64,10 @@ export const handleSignUpEmail = async (
   next: NextFunction
 ) => {
   const { email } = req.body;
+  logger.info("Received sign-up request", { email });
   try {
     if (!EmailValidator.validate(email)) {
+      logger.warn("Invalid email address provided", { email });
       throw new BadRequestError("INVALID_EMAIL", "Use a valid email address");
     }
 
@@ -72,17 +76,25 @@ export const handleSignUpEmail = async (
     });
 
     if (existingUser) {
+      logger.warn("Email already in use", { email });
       throw new BadRequestError("EMAIL_ALREADY_EXISTS", "Email already in use");
     }
 
     dispatchVerificationEmail(email);
+    logger.info("Verification email dispatched", { email });
 
     return new SuccessMsgResponse(
       "VERIFICATION_LINK_DISPATCHED",
       "Click on the link to proceed"
     ).send(res);
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    logger.error("Unable to validate email ", {
+      type: error.type,
+      code: error.code,
+      error: error.message,
+      stack: error.stack,
+      email,
+    });
     next(error);
   }
 };
@@ -116,6 +128,7 @@ export const handleVerifyEmail = async (
       const verifiedEmail: VerifiedEmail = {
         email: decoded.email,
       };
+      console.log(verifiedEmail);
 
       const response = await db
         .insert(emails)
@@ -161,13 +174,13 @@ export const handleCreateUser = async (
             "Email already in use"
           );
         }
-        const token = await db
+        const terminal = await db
           .select({ count: count() })
           .from(users)
-          .then((data) => generateToken(data[0].count + 1));
+          .then((data) => generateTerminal(data[0].count + 1));
 
         const newUser: NewUser = {
-          token,
+          terminal,
           firstName,
           lastName,
           email,

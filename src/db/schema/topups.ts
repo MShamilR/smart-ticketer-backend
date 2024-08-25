@@ -11,8 +11,8 @@ import {
 import { users } from "./users";
 
 export const paymentTypeEnum = pgEnum("payment_type", [
-  "card",
-  "bank_transfer",
+  "CARD",
+  "BANK_TRANSFER",
 ]);
 
 export const topups = pgTable("topups", {

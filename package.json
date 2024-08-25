@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon --exec node --trace-warnings --loader ts-node/esm ./src/index.ts",
+    "dev": "nodemon --exec node --trace-warnings -r tsconfig-paths/register --loader ts-node/esm ./src/index.ts",
     "db:generate": "drizzle-kit generate:pg --schema ./src/db/schema/* --out ./drizzle",
     "db:migrate": "tsc ./migrate.ts && node ./migrate.js",
     "db:migratetsx": "tsx ./migrate.ts",
@@ -28,7 +28,9 @@
     "express-validator": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.9.13",
-    "tsx": "^4.7.2"
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.7.2",
+    "winston": "^3.14.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

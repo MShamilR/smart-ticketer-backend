@@ -1,9 +1,9 @@
 import express from "express";
+import { handleRegisterBus } from "../controllers/busController";
 import { authorize } from "../helpers/authorise";
-import { handleInitiateTrip } from "../controllers/tripController";
 
 const router = express.Router();
 
-router.post("/initiate", authorize(["TICKETER"]), handleInitiateTrip);
+router.post("/initiate", authorize(["TICKETER"]), handleRegisterBus);
 
 export default router;
