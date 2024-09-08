@@ -8,6 +8,8 @@ import * as trips from "./trips";
 import * as users from "./users";
 import * as ticketers from "./ticketers";
 import * as invites from "./invites";
+import * as glAccounts from "./glAccounts";
+import * as glEntries from "./glEntries";
 
 const schema = {
   ...buses,
@@ -20,6 +22,8 @@ const schema = {
   ...emails,
   ...ticketers,
   ...invites,
+  ...glAccounts,
+  ...glEntries
 };
 
 export default schema;

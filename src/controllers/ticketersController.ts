@@ -17,7 +17,7 @@ import { inviteStatus } from "../db/schema/invites";
 type NewInvite = typeof invites.$inferInsert;
 type NewTicketer = typeof ticketers.$inferInsert;
 
-export const handleInviteTicketers = async (
+export const handleInviteTicketer = async (
   req: ProtectedRequest,
   res: Response,
   next: NextFunction

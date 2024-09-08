@@ -1,9 +1,21 @@
 import express from "express";
-import { handleRegisterBus } from "../controllers/busController";
+import {
+  handleInviteTicketer,
+  handleAcceptTicketer,
+} from "../controllers/ticketersController";
 import { authorize } from "../helpers/authorise";
 
 const router = express.Router();
 
-router.post("/initiate", authorize(["TICKETER"]), handleRegisterBus);
+router.post(
+  "/invite-ticketer",
+  authorize(["BUS_OPERATOR"]),
+  handleInviteTicketer
+);
+router.post(
+  "/accept-ticketer",
+  authorize(["TICKETER", "PASSENGER"]),
+  handleAcceptTicketer
+);
 
 export default router;
