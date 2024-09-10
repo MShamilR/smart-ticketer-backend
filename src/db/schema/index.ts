@@ -10,6 +10,9 @@ import * as ticketers from "./ticketers";
 import * as invites from "./invites";
 import * as glAccounts from "./glAccounts";
 import * as glEntries from "./glEntries";
+import * as purchases from "./purchases";
+import * as invoices from "./invoices";
+import * as invoiceItems from "./invoiceItems";
 
 const schema = {
   ...buses,
@@ -23,7 +26,10 @@ const schema = {
   ...ticketers,
   ...invites,
   ...glAccounts,
-  ...glEntries
+  ...glEntries,
+  ...purchases,
+  ...invoices,
+  ...invoiceItems
 };
 
 export default schema;

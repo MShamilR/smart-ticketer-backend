@@ -4,5 +4,7 @@ export default class GLEntryCreator {
   private CREDIT = "CREDIT";
   private LIABILITY = "LIABILIY";
 
-  public static async createGLEntry(JournalEntry: JournalEntry) {}
+  public static async createGLEntry(JournalEntry: JournalEntry) {
+    
+  }
 }
