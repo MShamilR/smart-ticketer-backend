@@ -10,20 +10,20 @@ import { purchases } from "./purchases";
 import { invoices } from "./invoices";
 import { serial } from "drizzle-orm/pg-core";
 
-export const txnStatuses = ["PENDING", "COMPLETED", "FAILED"] as const;
-export const TRANSACTION_STATUSES = createEnumObject(txnStatuses);
-export const statusEnum = pgEnum("status", txnStatuses);
+export const pymtStatuses = ["PENDING", "COMPLETED", "FAILED"] as const;
+export const TRANSACTION_STATUSES = createEnumObject(pymtStatuses);
+export const statusEnum = pgEnum("status", pymtStatuses);
 
-export const txnTypes = ["TOPUP", "CONSUME", "REFUND"] as const;
-export const TRANSACTION_TYPES = createEnumObject(txnTypes);
-export const typeEnum = pgEnum("type", txnTypes);
+export const pymtTypes = ["TOPUP", "CONSUME", "REFUND"] as const;
+export const TRANSACTION_TYPES = createEnumObject(pymtTypes);
+export const typeEnum = pgEnum("type", pymtTypes);
 
-export const transactions = pgTable("transactions", {
+export const payments = pgTable("payments", {
   id: serial("id").primaryKey().notNull(),
   timestamp: timestamp("timestamp", { withTimezone: true })
     .notNull()
     .defaultNow(),
-  purchaseId: varchar("purchase_id", { length: 20 }).references(
+  transactionId: varchar("transaction_id", { length: 20 }).references(
     () => purchases.id
   ),
   invoiceId: varchar("invoice_id", { length: 20 }).references(

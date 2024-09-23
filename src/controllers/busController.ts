@@ -7,7 +7,7 @@ import { buses } from "../db/schema/buses";
 import { BadRequestError } from "../core/apiError";
 import { SuccessResponse } from "../core/apiResponse";
 
-type NewBus = typeof buses.$inferInsert;
+type Bus = typeof buses.$inferInsert;
 
 export const handleRegisterBus = async (
   req: ProtectedRequest,
@@ -35,7 +35,7 @@ export const handleRegisterBus = async (
     const userId = authorisedUser?.id;
     const operatorId = authorisedUser?.operatorId;
 
-    const newBus: NewBus = {
+    const newBus: Bus = {
       userId,
       operatorId,
       registrationPlate,

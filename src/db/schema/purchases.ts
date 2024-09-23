@@ -9,7 +9,7 @@ import {
 import { users } from "./users";
 
 export const purchases = pgTable("purchases", {
-  id: serial("id"),
+  id: serial("id").primaryKey().notNull(),
   userId: integer("user_id").references(() => users.id),
   timestamp: timestamp("timestamp", { withTimezone: true })
     .notNull()

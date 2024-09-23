@@ -9,15 +9,16 @@ import { users } from "./users";
 import { purchases } from "./purchases";
 
 export const invoices = pgTable("invoices", {
-  id: varchar("id", { length: 20 }),
+  id: varchar("id", { length: 20 }).notNull(),
   timestamp: timestamp("timestamp", { withTimezone: true })
     .notNull()
     .defaultNow(),
-  purchaseId: varchar("purchase_id", { length: 20 }).references(
-    () => purchases.id
-  ),
+  purchaseId: varchar("purchase_id", { length: 20 })
+    .references(() => purchases.id)
+    .notNull(),
   status: varchar("type", { length: 20 }), // PENDING | SUCCESS | FAILED
-  orderAmount: bigint("order_amount", { mode: "bigint" }),
+  amountPayable: bigint("amount_payable", { mode: "bigint" }).notNull(),
+  orderAmount: bigint("order_amount", { mode: "bigint" }).notNull(),
   charges: bigint("charges", { mode: "bigint" }),
   discounts: bigint("discounts", { mode: "bigint" }),
   addons: bigint("addons", { mode: "bigint" }),
