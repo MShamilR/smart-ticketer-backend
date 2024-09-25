@@ -13,6 +13,8 @@ import * as glEntries from "./glEntries";
 import * as purchases from "./purchases";
 import * as invoices from "./invoices";
 import * as invoiceItems from "./invoiceItems";
+import * as payments from "./payments";
+import * as transactions from "./transactions";
 
 const schema = {
   ...buses,
@@ -29,7 +31,9 @@ const schema = {
   ...glEntries,
   ...purchases,
   ...invoices,
-  ...invoiceItems
+  ...invoiceItems,
+  ...payments,
+  ...transactions
 };
 
 export default schema;

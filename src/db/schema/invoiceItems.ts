@@ -1,9 +1,9 @@
-import { pgTable, varchar, bigint, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, varchar, bigint, timestamp, integer, serial } from "drizzle-orm/pg-core";
 import { invoices } from "./invoices";
 
 export const invoiceItems = pgTable("invoice_items", {
-  id: varchar("id", { length: 20 }),
-  invoiceId: varchar("invoice_id", { length: 20 }).references(
+  id: serial("id").primaryKey(),
+  invoiceId: integer("invoice_id").references(
     () => invoices.id
   ),
   description: varchar("description", { length: 100 }),

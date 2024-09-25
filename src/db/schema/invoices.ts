@@ -4,17 +4,17 @@ import {
   bigint,
   integer,
   timestamp,
+  serial
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { purchases } from "./purchases";
 
 export const invoices = pgTable("invoices", {
-  id: varchar("id", { length: 20 }).notNull(),
+  id: serial("id").primaryKey(),
   timestamp: timestamp("timestamp", { withTimezone: true })
     .notNull()
     .defaultNow(),
-  purchaseId: varchar("purchase_id", { length: 20 })
-    .references(() => purchases.id)
+  purchaseId: integer("purchase_id").references(() => purchases.id)
     .notNull(),
   status: varchar("type", { length: 20 }), // PENDING | SUCCESS | FAILED
   amountPayable: bigint("amount_payable", { mode: "bigint" }).notNull(),

@@ -5,12 +5,12 @@ import { transactions } from "../db/schema/transactions";
 import { invoiceItems } from "../db/schema/invoiceItems";
 import { invoices } from "../db/schema/invoices";
 import {
-  TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from "../db/schema/transactions";
-import { pymtTypes } from "../db/schema/payments";
+import { payments, pymtTypes } from "../db/schema/payments";
 
 type Transaction = typeof transactions.$inferInsert;
+type Payment = typeof payments.$inferInsert;
 type Invoice = typeof invoices.$inferInsert;
 type InvoiceItem = typeof invoiceItems.$inferInsert;
 
@@ -32,16 +32,16 @@ export default class AccountsManager {
   private static LIABILITY = "LIABILITY";
 
   public static async creditsPurchase(
-    type: PaymentType,
+    payment: Payment,
     invoice: Invoice,
     invoiceItems: InvoiceItem[]
   ) {
     const transaction: Transaction =
       await TransactionsManager.createTransaction(
         invoice.purchaseId,
-        invoice.id,
+        invoice.id!,
         TRANSACTION_TYPES.TOPUP,
-        type,
+        payment.type!,
         invoice.amountPayable
       );
   }
