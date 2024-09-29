@@ -1,0 +1,6 @@
+export const GL_ACCOUNTS = {
+  CASH: "A00001",
+  USER_CREDITS: "A00002",
+  OPERATORS_PAYABLE: "L00001",
+  PROCESSING_FEE: "L00002",
+} as const;

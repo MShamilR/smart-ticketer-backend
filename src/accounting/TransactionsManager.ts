@@ -12,8 +12,6 @@ type TransactionType =
 
 export default class TransactionsManager {
   public static async createTransaction(
-    purchaseId: number,
-    invoiceId: number,
     type: TransactionType,
     paymentMethod: string,
     amount: bigint,

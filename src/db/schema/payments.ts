@@ -15,7 +15,7 @@ export const pymtStatuses = ["PENDING", "COMPLETED", "FAILED"] as const;
 export const TRANSACTION_STATUSES = createEnumObject(pymtStatuses);
 export const statusEnum = pgEnum("status", pymtStatuses);
 
-export const pymtTypes = ["CARD", "BANK_TRANSFER"] as const;
+export const pymtTypes = ["CARD", "PAYHERE", "BANK_TRANSFER"] as const;
 export const TRANSACTION_TYPES = createEnumObject(pymtTypes);
 export const typeEnum = pgEnum("type", pymtTypes);
 

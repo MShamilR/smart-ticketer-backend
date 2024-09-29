@@ -1,11 +1,13 @@
 import { glAccounts } from "../db/schema/glAccounts";
-import { JournalEntry } from "../interfaces/accounts/JournalEntry";
+import { JournalEntry } from "./interfaces/JournalEntry";
 import { db } from "../db/setup";
 import { eq } from "drizzle-orm";
 import { transactions } from "../db/schema/transactions";
+import { glEntries } from "../db/schema/glEntries";
 
-type GLAccount = typeof glAccounts.$inferInsert;
+type GLAccount = typeof glAccounts.$inferSelect;
 type Transaction = typeof transactions.$inferInsert;
+type GLEntry = typeof glEntries.$inferInsert;
 
 export default class GLEntryCreator {
   private static DEBIT = "DEBIT";
@@ -13,13 +15,19 @@ export default class GLEntryCreator {
   private static LIABILITY = "LIABILIY";
   private static INCOME = "INCOME";
 
-  public static async createGLEntry(journalEntry: JournalEntry) {
-    const glaccount = await db.query.glAccounts.findFirst({
+  public static async createGLEntry(
+    journalEntry: JournalEntry,
+    transaction: Transaction
+  ) {
+    const glAccount = await db.query.glAccounts.findFirst({
       where: eq(glAccounts.id, journalEntry.accountId),
     });
+    const newStanding = this.calculateStanding(glAccount!, journalEntry);
+    await this.updateGLAccount(glAccount!, newStanding);
+    await this.saveGLEntry(journalEntry, transaction, newStanding);
   }
 
-  public static calculateStanding(
+  private static calculateStanding(
     glAccount: GLAccount,
     journalEntry: JournalEntry
   ): bigint {
@@ -44,12 +52,30 @@ export default class GLEntryCreator {
     }
   }
 
-  public static async saveGLEntry(
+  public static async updateGLAccount(
     glAccount: GLAccount,
+    newStanding: bigint
+  ) {
+    await db
+      .update(glAccounts)
+      .set({ balance: newStanding })
+      .where(eq(glAccounts.id, glAccount.id));
+  }
+
+  public static async saveGLEntry(
     journalEntry: JournalEntry,
     transaction: Transaction,
     standing: bigint
-  ) {}
+  ) {
+    const newGLEntry: GLEntry = {
+      description: journalEntry.description,
+      type: journalEntry.type,
+      glAccountId: journalEntry.accountId,
+      amount: journalEntry.amount,
+      transactionId: transaction.id!,
+      standing,
+    };
 
-  public static async updateGLAccount() {}
+    await db.insert(glEntries).values(newGLEntry);
+  }
 }
