@@ -30,10 +30,31 @@ export default class AccountsCalculation {
     );
 
     this.addJournalEntry(
-      GL_ACCOUNTS.USER_CREDITS,
+      GL_ACCOUNTS.PROCESSING_FEE,
       "CREDIT",
       this.processingFee,
       "Processing fee payable"
+    );
+
+    return this.entries;
+  }
+
+  public static getCreditsConsume(
+    userGLAccountId: string,
+    amount: bigint
+  ): JournalEntry[] {
+    this.addJournalEntry(
+      GL_ACCOUNTS.USER_CREDITS,
+      "DEBIT",
+      amount,
+      "Credit Consume By User" // Todo: Add User Id
+    );
+
+    this.addJournalEntry(
+      userGLAccountId,
+      "CREDIT",
+      amount,
+      "Credit Consume" // Todo: Add Trip Id
     );
 
     return this.entries;

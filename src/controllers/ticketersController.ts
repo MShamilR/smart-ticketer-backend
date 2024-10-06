@@ -1,4 +1,3 @@
-import { operators } from "./../db/schema/operators";
 import { NextFunction, Request, Response } from "express";
 import { ProtectedRequest } from "types/app-requests";
 import { db } from "../db/setup";

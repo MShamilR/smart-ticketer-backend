@@ -1,7 +1,4 @@
 import { JournalEntry } from "./interfaces/JournalEntry";
-import { integer } from "drizzle-orm/pg-core";
-import { db } from "../db/setup";
-import { response } from "express";
 import TransactionsManager from "./TransactionsManager";
 import AccountsCalculation from "./AccountsCalculation";
 import GLEntryCreator from "./GLEntryCreator";
@@ -30,16 +27,11 @@ export default class AccountsManager {
   public static async creditsPurchase(
     user: User,
     payment: Payment,
-    invoice: Invoice,
     invoiceItems: InvoiceItem[]
   ): Promise<AccountsManagerResponse> {
     const transaction: Transaction =
-      await TransactionsManager.createTransaction(
-        TRANSACTION_TYPES.TOPUP,
-        payment.type!,
-        invoice.amountPayable
-      );
-    const userGLAccount = this.getUserGLAccount(user);
+      await TransactionsManager.createTransaction(TRANSACTION_TYPES.TOPUP);
+    const userGLAccount = this.getUserGLAccountId(user);
 
     // Moved to AccountsCalculation class for testing, not final.
     // const commisionRate = this.getIPGCommision(payment.type);
@@ -47,12 +39,26 @@ export default class AccountsManager {
     const journalEntries: JournalEntry[] =
       AccountsCalculation.getCreditsPurchase(invoiceItems, payment.type);
 
-    this.insertJournalEntries(journalEntries, transaction);
+    await this.insertJournalEntries(journalEntries, transaction);
 
     return { transaction, journalEntries };
   }
 
-  public static creditsConsume() {}
+  public static async creditsConsume(
+    user: User,
+    amount: bigint
+  ): Promise<AccountsManagerResponse> {
+    
+    const transaction: Transaction =
+      await TransactionsManager.createTransaction(TRANSACTION_TYPES.CONSUME);
+    
+    const userGLAccountId = this.getUserGLAccountId(user);
+    const journalEntries: JournalEntry[] =
+      AccountsCalculation.getCreditsConsume(userGLAccountId, amount);
+    await this.insertJournalEntries(journalEntries, transaction);
+
+    return { transaction, journalEntries };
+  }
 
   public static creditsTransfer() {}
 
@@ -60,16 +66,18 @@ export default class AccountsManager {
 
   public static createUserAccount() {}
 
-  private static insertJournalEntries(
+  private static async insertJournalEntries(
     journalEntries: JournalEntry[],
     transaction: Transaction
   ) {
-    journalEntries.forEach((journalEntry) => {
-      GLEntryCreator.createGLEntry(journalEntry, transaction);
-    });
+    await Promise.all(
+      journalEntries.map((journalEntry) =>
+        GLEntryCreator.createGLEntry(journalEntry, transaction)
+      )
+    );
   }
 
-  private static getUserGLAccount(user: User): string {
+  private static getUserGLAccountId(user: User): string {
     return `L-U` + user.id; // L=> LIABILITY U=> User
   }
 

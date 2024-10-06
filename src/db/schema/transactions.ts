@@ -24,16 +24,7 @@ export const transactions = pgTable("transactions", {
   timestamp: timestamp("timestamp", { withTimezone: true })
     .notNull()
     .defaultNow(),
-  // purchaseId: integer("purchase_id").references(
-  //   () => purchases.id
-  // ),
-  // invoiceId: integer("invoice_id").references(
-  //   () => invoices.id
-  // ),
   type: typeEnum("type"),
-  paymentMethod: varchar("payment_method", { length: 20 }),
-  amount: bigint("amount", { mode: "bigint" }).notNull(),
-  // status: statusEnum("status"),
 });
 
 // Refunds (if featured) will have a transaction record as well as an invoice for the relevant purchase id

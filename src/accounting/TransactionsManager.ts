@@ -13,15 +13,10 @@ type TransactionType =
 export default class TransactionsManager {
   public static async createTransaction(
     type: TransactionType,
-    paymentMethod: string,
-    amount: bigint,
   ): Promise<Transaction> {
     const newTransaction: Omit<Transaction, "id" | "timestamp"> = {
-      amount,
-      type,
-      paymentMethod,
+      type
     };
-
     const [response] = await db
       .insert(transactions)
       .values(newTransaction)

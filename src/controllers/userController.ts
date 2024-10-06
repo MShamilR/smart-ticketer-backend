@@ -1,4 +1,3 @@
-import { uuid } from "drizzle-orm/pg-core";
 import { Request, Response, NextFunction } from "express";
 import { eq, count } from "drizzle-orm";
 import jwt from "jsonwebtoken";
