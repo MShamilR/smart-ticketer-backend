@@ -13,10 +13,11 @@ import * as EmailValidator from "email-validator";
 import { Address } from "nodemailer/lib/mailer";
 import { SuccessResponse } from "../core/apiResponse";
 import createLogger from "../utils/logger";
+import { ProtectedRequest } from "types/app-requests";
 
 const logger = createLogger("user-controller");
 
-type NewUser = typeof users.$inferInsert;
+type User = typeof users.$inferInsert;
 type VerifiedEmail = typeof emails.$inferInsert;
 
 const transporter = nodemailer.createTransport({
@@ -88,10 +89,7 @@ export const handleSignUpEmail = async (
     ).send(res);
   } catch (error: any) {
     logger.error("Unable to validate email ", {
-      type: error.type,
-      code: error.code,
-      error: error.message,
-      stack: error.stack,
+      error,
       email,
     });
     next(error);
@@ -178,7 +176,7 @@ export const handleCreateUser = async (
           .from(users)
           .then((data) => generateTerminal(data[0].count + 1));
 
-        const newUser: NewUser = {
+        const newUser: User = {
           terminal,
           firstName,
           lastName,
@@ -208,5 +206,34 @@ export const handleCreateUser = async (
   } catch (error) {
     console.log(error);
     next(error);
+  }
+};
+
+export const handleGetUserDetails = async (
+  req: ProtectedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+  } catch (error) {
+    const { id } = req.user!;
+
+    const authorisedUser = await db.query.users.findFirst({
+      where: eq(users.id, id),
+      with: {
+        operator: true,
+        ticketer: true,
+      },
+    });
+
+    // const response: Omit<User, "id" | "passwordHash" |"refreshToken" | "glAccountId" | "" > = {
+      
+    // };
+
+    return new SuccessResponse(
+      "SUCCESS",
+      "User details fetched",
+      authorisedUser
+    ).send(res);
   }
 };

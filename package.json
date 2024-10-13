@@ -28,6 +28,7 @@
     "express-validator": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.9.13",
+    "socket.io": "^4.8.0",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.7.2",
     "winston": "^3.14.1"

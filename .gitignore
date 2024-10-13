@@ -4,3 +4,5 @@ package-lock.json
 temp.ts
 .env
 accounting.txt
+redis.ts
+.gitignore

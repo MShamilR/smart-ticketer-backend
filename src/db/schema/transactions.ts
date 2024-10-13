@@ -15,7 +15,7 @@ import { invoices } from "./invoices";
 // export const TRANSACTION_STATUSES = createEnumObject(txnStatuses);
 // export const statusEnum = pgEnum("status", txnStatuses);
 
-export const txnTypes = ["TOPUP", "CONSUME", "REFUND"] as const;
+export const txnTypes = ["TOPUP", "CONSUME", "REFUND", 'CREATE'] as const;
 export const TRANSACTION_TYPES = createEnumObject(txnTypes);
 export const typeEnum = pgEnum("type", txnTypes);
 

@@ -20,8 +20,6 @@ export const handleInitiateTicket = async (
   res: Response,
   next: NextFunction
 ) => {
-  
-
   try {
     const { id } = req.user!;
     const terminal = req.params.terminal;
@@ -46,10 +44,13 @@ export const handleInitiateTicket = async (
   }
 };
 
-const issueTicketToken = (
-  tripInfo: TripInfo,
-  foundPassenger: User
-) => {
+export const handleCompleteTicket = async (
+  req: ProtectedRequest,
+  res: Response,
+  next: NextFunction
+) => {};
+
+const issueTicketToken = (tripInfo: TripInfo, foundPassenger: User) => {
   const ticketToken = jwt.sign(
     {
       ticketInfo: {

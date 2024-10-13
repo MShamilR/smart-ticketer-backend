@@ -48,10 +48,9 @@ export default class AccountsManager {
     user: User,
     amount: bigint
   ): Promise<AccountsManagerResponse> {
-    
     const transaction: Transaction =
       await TransactionsManager.createTransaction(TRANSACTION_TYPES.CONSUME);
-    
+
     const userGLAccountId = this.getUserGLAccountId(user);
     const journalEntries: JournalEntry[] =
       AccountsCalculation.getCreditsConsume(userGLAccountId, amount);
@@ -64,7 +63,10 @@ export default class AccountsManager {
 
   public static creditsRefund() {}
 
-  public static createUserAccount() {}
+  public static async createUserAccount() {
+    const transaction: Transaction =
+      await TransactionsManager.createTransaction(TRANSACTION_TYPES.CREATE);
+  }
 
   private static async insertJournalEntries(
     journalEntries: JournalEntry[],

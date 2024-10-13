@@ -15,7 +15,7 @@ export const handleRegisterBus = async (
   next: NextFunction
 ) => {
   try {
-    const { id, email, role } = req.user!;
+    const { email } = req.user!;
     const { registrationPlate, routeNo, stops } = req.body;
     if (!registrationPlate || !routeNo || !stops) {
       throw new BadRequestError(

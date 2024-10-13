@@ -7,6 +7,7 @@ import { BadRequestError, AuthFailureError } from "../core/apiError";
 import { SuccessResponse } from "../core/apiResponse";
 import bcrypt from "bcryptjs";
 import "dotenv/config";
+import SignInRequest from "interfaces/requests/SignInRequest";
 
 export const handleSignIn = async (
   req: Request,
@@ -14,7 +15,7 @@ export const handleSignIn = async (
   next: NextFunction
 ) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = <SignInRequest>req.body;
     if (!email || !password)
       throw new BadRequestError(
         "EMPTY_CREDENTIALS",

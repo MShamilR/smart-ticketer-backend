@@ -1,4 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
+import { createServer } from "node:http";
 import userRoute from "./routes/userRoute";
 import authRoute from "./routes/authRoute";
 import busRoute from "./routes/busRoute";
@@ -10,8 +11,14 @@ import {
   ErrorType,
 } from "./core/apiError";
 import "dotenv/config";
+import { configureSocket } from "./socket.io/config";
 
 const app = express();
+
+const server = createServer(app);
+
+// Todo: This Socket.IO implementation has not been tested.
+configureSocket(server);
 
 app.use(express.json());
 
@@ -42,6 +49,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log(`smart-ticketer-backend listening on port ${process.env.PORT}`);
 });

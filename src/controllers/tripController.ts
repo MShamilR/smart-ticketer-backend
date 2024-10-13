@@ -15,10 +15,10 @@ export const handleInitiateTrip = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id, email, role } = req.user!;
+  const { id } = req.user!;
 
   const authorisedUser = await db.query.users.findFirst({
-    where: eq(users.email, email),
+    where: eq(users.id, id),
     with: {
       operator: true,
       ticketer: true,
