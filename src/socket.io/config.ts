@@ -1,8 +1,8 @@
 import { Server as HttpServer } from "http";
 import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
-import EmitterBase from "socket.io/emitters/EmitterBase";
-import UserManager from "socket.io/utils/UserManager";
+import EmitterBase from "./emitters/EmitterBase";
+import UserManager from "./utils/UserManager";
 
 export const configureSocket = (server: HttpServer) => {
   const io = new Server(server);

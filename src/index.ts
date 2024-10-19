@@ -12,10 +12,12 @@ import {
 } from "./core/apiError";
 import "dotenv/config";
 import { configureSocket } from "./socket.io/config";
+import createLogger from "./utils/logger";
 
 const app = express();
-
 const server = createServer(app);
+
+const logger = createLogger("index");
 
 // Todo: This Socket.IO implementation has not been tested.
 configureSocket(server);
@@ -45,6 +47,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.log(err);
     ApiError.handle(err, res);
   } else {
+    logger.error(err);
     ApiError.handle(new InternalError(), res);
   }
 });
