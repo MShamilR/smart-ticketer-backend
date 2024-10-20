@@ -19,7 +19,7 @@ export const statusEnum = pgEnum("status", status);
 
 export const trips = pgTable("trips", {
   id: serial("id").primaryKey(),
-  refId: uuid("ref_id").primaryKey().notNull().defaultRandom(),
+  refId: uuid("ref_id").notNull().defaultRandom(),
   startTime: timestamp("start_time", { withTimezone: true })
     .notNull()
     .defaultNow(),

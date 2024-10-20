@@ -15,6 +15,7 @@ import { operators } from "./operators";
 import createEnumObject from "../../utils/enumGenerator";
 import { ticketers } from "./ticketers";
 import { invites } from "./invites";
+import { glAccounts } from "./glAccounts";
 
 export const appRoles = [
   "PASSENGER",
@@ -29,14 +30,14 @@ export const rolesEnum = pgEnum("role", appRoles);
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  terminal: varchar("terminal").unique().notNull(),
+  terminal: varchar("terminal").notNull(),
   firstName: varchar("first_name", { length: 100 }),
   lastName: varchar("last_name", { length: 100 }),
   email: varchar("email", { length: 100 }).unique().notNull(),
   passwordHash: varchar("password_hash", { length: 256 }).notNull(),
   refreshToken: varchar("refresh_token", { length: 256 }),
   role: rolesEnum("role"),
-  glAccountId: varchar("gl_account_id", { length: 20 }),
+  glAccountId: varchar("gl_account_id").references(() => glAccounts.id),
   emergencyContact: jsonb("emergency_contact").$type<{
     name: string;
     relationship: string;
@@ -56,6 +57,10 @@ export const users = pgTable("users", {
 export const usersRelations = relations(users, ({ one }) => ({
   ticketer: one(ticketers),
   operator: one(operators),
+  glAccount: one(glAccounts, {
+    fields: [users.glAccountId],
+    references: [glAccounts.id],
+  }),
   //invite: one(invites)
   // ticketer: one(ticketers, {
   //   fields: [users.ticketerId],

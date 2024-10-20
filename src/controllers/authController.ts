@@ -8,6 +8,9 @@ import { SuccessResponse } from "../core/apiResponse";
 import bcrypt from "bcryptjs";
 import "dotenv/config";
 import SignInRequest from "interfaces/requests/SignInRequest";
+import createLogger from "../utils/logger";
+
+const logger = createLogger("auth-controller");
 
 export const handleSignIn = async (
   req: Request,
@@ -25,6 +28,9 @@ export const handleSignIn = async (
       where: eq(users.email, email),
     });
     if (!matchedUser) {
+      logger.error("No user registered", {
+        email,
+      });
       throw new BadRequestError(
         "USER_NOT_FOUND",
         "No user is registered with the provided email"
