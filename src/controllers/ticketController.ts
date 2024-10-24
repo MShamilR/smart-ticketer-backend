@@ -59,26 +59,37 @@ export const handleCompleteTicket = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id } = req.user!;
-  const terminal = req.params.terminal;
+  try {
+    const { id } = req.user!;
+    const terminal = req.params.terminal;
 
-  const ticketToken = req.headers["x-ticket-token"] as string | undefined;
-  if (!ticketToken) {
-    throw new BadRequestError("MISSING_TOKEN", "Missing Trip Token");
+    const ticketToken = req.headers["x-ticket-token"] as string | undefined;
+    if (!ticketToken) {
+      throw new BadRequestError("MISSING_TOKEN", "Missing Trip Token");
+    }
+
+    const ticketInfo = verifyTicketToken(id, ticketToken);
+    const foundPassenger = await verifyPassengerById(ticketInfo.passengerId);
+    if (terminal !== foundPassenger.terminal) {
+      throw new ForbiddenError(
+        "TERMINAL_MISMATCH",
+        "You don't have permission to access this endpoint"
+      );
+    }
+
+    const { passengers, baseFare } = <IssueTicketRequest>req.body;
+    const totalFare = calculateTotalFare(passengers, baseFare);
+    AccountsManager.creditsConsume(id, totalFare);
+    return new SuccessResponse("TICKET_ISSUED", "Ticket issued successfully", {
+      // Todo
+      // Route
+      // Bus Number
+      // Ticket Info
+      // Issued By
+    }).send(res);;
+  } catch (error) {
+    next(error);
   }
-
-  const ticketInfo = verifyTicketToken(id, ticketToken);
-  const foundPassenger = await verifyPassengerById(ticketInfo.passengerId);
-  if (terminal !== foundPassenger.terminal) {
-    throw new ForbiddenError(
-      "TERMINAL_MISMATCH",
-      "You don't have permission to access this endpoint"
-    );
-  }
-
-  const { passengers, baseFare } = <IssueTicketRequest>req.body;
-  const totalFare = calculateTotalFare(passengers, baseFare);
-  AccountsManager.creditsConsume(id, totalFare);
 };
 
 const calculateTotalFare = (passengers: Passenger, baseFare: number) => {
