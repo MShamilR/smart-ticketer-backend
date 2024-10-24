@@ -9,6 +9,8 @@ import {
   jsonb,
   real,
   boolean,
+  numeric,
+  doublePrecision,
 } from "drizzle-orm/pg-core";
 import { buses } from "./buses";
 import { operators } from "./operators";
@@ -29,7 +31,7 @@ export const Roles = createEnumObject(appRoles);
 export const rolesEnum = pgEnum("role", appRoles);
 
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  id: serial("id").primaryKey().notNull(),
   terminal: varchar("terminal").notNull(),
   firstName: varchar("first_name", { length: 100 }),
   lastName: varchar("last_name", { length: 100 }),

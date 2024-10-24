@@ -10,9 +10,9 @@ export default class AccountsCalculation {
   private static DEBIT = "DEBIT";
   private static CREDIT = "CREDIT";
 
-  private static topupAmount = BigInt(0);
-  private static processingFee = BigInt(0);
-  private static totalAmount = BigInt(0);
+  private static topupAmount = Number(0);
+  private static processingFee = Number(0);
+  private static totalAmount = Number(0);
 
   private static entries: JournalEntry[];
 
@@ -41,7 +41,7 @@ export default class AccountsCalculation {
 
   public static getCreditsConsume(
     userGLAccountId: string,
-    amount: bigint
+    amount: number
   ): JournalEntry[] {
     this.addJournalEntry(
       GL_ACCOUNTS.USER_CREDITS,
@@ -66,7 +66,7 @@ export default class AccountsCalculation {
   ) {
     invoiceItems.forEach((item) => {
       const subject = item.subject;
-      const amount = item.amount!;
+      const amount = Number(item.amount!);
       const type = item.type;
       this.setCharges(amount, type!);
       this.updateTotalAmount(amount, type!);
@@ -75,7 +75,7 @@ export default class AccountsCalculation {
     this.processingFee = this.totalAmount * commisionRate;
   }
 
-  private static updateTotalAmount(amount: bigint, type: string): void {
+  private static updateTotalAmount(amount: number, type: string): void {
     switch (type) {
       case "PURCHASE_ITEM":
       case "CHARGE":
@@ -89,7 +89,7 @@ export default class AccountsCalculation {
     }
   }
 
-  private static setCharges(amount: bigint, type: string): void {
+  private static setCharges(amount: number, type: string): void {
     switch (type) {
       case "PURCHASE_ITEM":
         this.topupAmount += amount;
@@ -99,20 +99,20 @@ export default class AccountsCalculation {
     }
   }
 
-  private static getIPGCommision(paymentType: PaymentType): bigint {
+  private static getIPGCommision(paymentType: PaymentType): number {
     switch (paymentType) {
       case "PAYHERE":
-        return BigInt(process.env.COMMISSION_PAYHERE!);
+        return Number(process.env.COMMISSION_PAYHERE!);
         break;
       default:
-        return BigInt(0);
+        return Number(0);
     }
   }
 
   private static addJournalEntry(
     accountId: string,
     type: string,
-    amount: bigint,
+    amount: number,
     description: string
   ) {
     const entry: JournalEntry = { accountId, type, amount, description };

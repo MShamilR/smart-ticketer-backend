@@ -1,6 +1,5 @@
 import { glAccounts } from "../db/schema/glAccounts";
 import { JournalEntry } from "./interfaces/JournalEntry";
-import { db } from "../db/setup";
 import { eq } from "drizzle-orm";
 import { transactions } from "../db/schema/transactions";
 import { glEntries } from "../db/schema/glEntries";
@@ -17,20 +16,21 @@ export default class GLEntryCreator {
 
   public static async createGLEntry(
     journalEntry: JournalEntry,
-    transaction: Transaction
+    transaction: Transaction,
+    tx: any
   ) {
-    const glAccount = await db.query.glAccounts.findFirst({
+    const glAccount = await tx.query.glAccounts.findFirst({
       where: eq(glAccounts.id, journalEntry.accountId),
     });
     const newStanding = this.calculateStanding(glAccount!, journalEntry);
-    await this.updateGLAccount(glAccount!, newStanding);
-    await this.saveGLEntry(journalEntry, transaction, newStanding);
+    await this.updateGLAccount(glAccount!, newStanding, tx);
+    await this.saveGLEntry(journalEntry, transaction, newStanding, tx);
   }
 
   private static calculateStanding(
     glAccount: GLAccount,
     journalEntry: JournalEntry
-  ): bigint {
+  ): number {
     const accountType = glAccount.type;
     const balance = glAccount.balance;
 
@@ -54,9 +54,10 @@ export default class GLEntryCreator {
 
   public static async updateGLAccount(
     glAccount: GLAccount,
-    newStanding: bigint
+    newStanding: number,
+    tx: any
   ) {
-    await db
+    await tx
       .update(glAccounts)
       .set({ balance: newStanding })
       .where(eq(glAccounts.id, glAccount.id));
@@ -65,7 +66,8 @@ export default class GLEntryCreator {
   public static async saveGLEntry(
     journalEntry: JournalEntry,
     transaction: Transaction,
-    standing: bigint
+    standing: number,
+    tx: any
   ) {
     const newGLEntry: GLEntry = {
       description: journalEntry.description,
@@ -76,6 +78,6 @@ export default class GLEntryCreator {
       standing,
     };
 
-    await db.insert(glEntries).values(newGLEntry);
+    await tx.insert(glEntries).values(newGLEntry);
   }
 }

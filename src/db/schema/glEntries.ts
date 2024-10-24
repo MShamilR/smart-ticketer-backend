@@ -5,6 +5,7 @@ import {
   serial,
   timestamp,
   integer,
+  real,
 } from "drizzle-orm/pg-core";
 import { glAccounts } from "./glAccounts";
 import { transactions } from "./transactions";
@@ -21,7 +22,7 @@ export const glEntries = pgTable("gl_entries", {
     () => transactions.id
   ),
   description: varchar("description", { length: 100 }),
-  amount: bigint("amount", { mode: "bigint" }),
-  standing: bigint("standing", { mode: "bigint" }),
+  amount: real("amount"),
+  standing: real("standing"),
   type: varchar("type", { length: 20 }), // CREDIT | DEBIT
 });

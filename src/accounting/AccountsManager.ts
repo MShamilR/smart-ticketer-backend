@@ -10,6 +10,8 @@ import { TRANSACTION_TYPES } from "../db/schema/transactions";
 import { payments, pymtTypes } from "../db/schema/payments";
 import "dotenv/config";
 import { AccountsManagerResponse } from "./interfaces/AccountsManagerResponse";
+import { db } from "db/setup";
+import { eq } from "drizzle-orm";
 
 type User = typeof users.$inferInsert;
 type Transaction = typeof transactions.$inferInsert;
@@ -25,38 +27,60 @@ export default class AccountsManager {
   private static LIABILITY = "LIABILITY";
 
   public static async creditsPurchase(
-    user: User,
+    userId: number,
     payment: Payment,
     invoiceItems: InvoiceItem[]
   ): Promise<AccountsManagerResponse> {
-    const transaction: Transaction =
-      await TransactionsManager.createTransaction(TRANSACTION_TYPES.TOPUP);
-    const userGLAccount = this.getUserGLAccountId(user);
+    return await db.transaction(async (tx) => {
+      const transaction: Transaction =
+        await TransactionsManager.createTransaction(
+          TRANSACTION_TYPES.TOPUP,
+          tx
+        );
+      const userGLAccount = this.getUserGLAccountId(userId);
 
-    // Moved to AccountsCalculation class for testing, not final.
-    // const commisionRate = this.getIPGCommision(payment.type);
+      // Moved to AccountsCalculation class for testing, not final.
+      // const commisionRate = this.getIPGCommision(payment.type);
 
-    const journalEntries: JournalEntry[] =
-      AccountsCalculation.getCreditsPurchase(invoiceItems, payment.type);
+      const journalEntries: JournalEntry[] =
+        AccountsCalculation.getCreditsPurchase(invoiceItems, payment.type);
 
-    await this.insertJournalEntries(journalEntries, transaction);
+      await this.insertJournalEntries(journalEntries, transaction, tx);
 
-    return { transaction, journalEntries };
+      return { transaction, journalEntries };
+    });
   }
 
   public static async creditsConsume(
-    user: User,
-    amount: bigint
+    userId: number,
+    amount: number
   ): Promise<AccountsManagerResponse> {
-    const transaction: Transaction =
-      await TransactionsManager.createTransaction(TRANSACTION_TYPES.CONSUME);
+    return await db.transaction(async (tx) => {
+      const transaction: Transaction =
+        await TransactionsManager.createTransaction(
+          TRANSACTION_TYPES.CONSUME,
+          tx
+        );
 
-    const userGLAccountId = this.getUserGLAccountId(user);
-    const journalEntries: JournalEntry[] =
-      AccountsCalculation.getCreditsConsume(userGLAccountId, amount);
-    await this.insertJournalEntries(journalEntries, transaction);
+      const userGLAccountId = this.getUserGLAccountId(userId);
+      const journalEntries: JournalEntry[] =
+        AccountsCalculation.getCreditsConsume(userGLAccountId, amount);
 
-    return { transaction, journalEntries };
+      await this.insertJournalEntries(journalEntries, transaction, tx);
+
+      const user = await tx.query.users.findFirst({
+        where: eq(users.id, userId),
+      });
+
+      const updatedCreditBalance = user!.creditBalance! - amount;
+
+      await tx
+        .update(users)
+        .set({ creditBalance: updatedCreditBalance })
+        .where(eq(users.id, user!.id!));
+
+      return { transaction, journalEntries };
+    });
   }
 
   public static creditsTransfer() {}
@@ -64,23 +88,29 @@ export default class AccountsManager {
   public static creditsRefund() {}
 
   public static async createUserAccount() {
-    const transaction: Transaction =
-      await TransactionsManager.createTransaction(TRANSACTION_TYPES.CREATE);
+    return await db.transaction(async (tx) => {
+      const transaction: Transaction =
+        await TransactionsManager.createTransaction(
+          TRANSACTION_TYPES.CREATE,
+          tx
+        );
+    });
   }
 
   private static async insertJournalEntries(
     journalEntries: JournalEntry[],
-    transaction: Transaction
+    transaction: Transaction,
+    tx: any
   ) {
     await Promise.all(
       journalEntries.map((journalEntry) =>
-        GLEntryCreator.createGLEntry(journalEntry, transaction)
+        GLEntryCreator.createGLEntry(journalEntry, transaction, tx)
       )
     );
   }
 
-  private static getUserGLAccountId(user: User): string {
-    return `L-U` + user.id; // L=> LIABILITY U=> User
+  private static getUserGLAccountId(userId: number): string {
+    return `L-U` + userId; // L=> LIABILITY U=> User
   }
 
   // private static getIPGCommision(paymentType: PaymentType): number {

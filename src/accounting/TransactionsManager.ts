@@ -1,8 +1,6 @@
 import { db } from "../db/setup";
 import { transactions } from "../db/schema/transactions";
-import {
-  TRANSACTION_TYPES,
-} from "../db/schema/transactions";
+import { TRANSACTION_TYPES } from "../db/schema/transactions";
 
 type Transaction = typeof transactions.$inferInsert;
 type TransactionType =
@@ -13,11 +11,12 @@ type TransactionType =
 export default class TransactionsManager {
   public static async createTransaction(
     type: TransactionType,
+    tx: any
   ): Promise<Transaction> {
     const newTransaction: Omit<Transaction, "id" | "timestamp"> = {
-      type
+      type,
     };
-    const [response] = await db
+    const [response] = await tx
       .insert(transactions)
       .values(newTransaction)
       .returning();

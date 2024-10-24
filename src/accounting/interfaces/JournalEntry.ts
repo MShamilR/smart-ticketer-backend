@@ -1,6 +1,6 @@
 export interface JournalEntry {
-    accountId: string,
-    type: string,
-    amount: bigint,
-    description: string
+  accountId: string;
+  type: string;
+  amount: number;
+  description: string;
 }
