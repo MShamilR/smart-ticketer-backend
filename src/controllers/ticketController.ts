@@ -80,13 +80,25 @@ export const handleCompleteTicket = async (
     const { passengers, baseFare } = <IssueTicketRequest>req.body;
     const totalFare = calculateTotalFare(passengers, baseFare);
     AccountsManager.creditsConsume(id, totalFare);
+
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, id),
+    });
+
+    const updatedCreditBalance = user!.creditBalance! - totalFare;
+
+    await db
+      .update(users)
+      .set({ creditBalance: updatedCreditBalance })
+      .where(eq(users.id, user!.id!));
+
     return new SuccessResponse("TICKET_ISSUED", "Ticket issued successfully", {
       // Todo
       // Route
       // Bus Number
       // Ticket Info
       // Issued By
-    }).send(res);;
+    }).send(res);
   } catch (error) {
     next(error);
   }

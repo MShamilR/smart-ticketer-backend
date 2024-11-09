@@ -68,18 +68,7 @@ export default class AccountsManager {
 
       await this.insertJournalEntries(journalEntries, transaction, tx);
 
-      const user = await tx.query.users.findFirst({
-        where: eq(users.id, userId),
-      });
-
-      const updatedCreditBalance = user!.creditBalance! - amount;
-
-      await tx
-        .update(users)
-        .set({ creditBalance: updatedCreditBalance })
-        .where(eq(users.id, user!.id!));
-
-      return { transaction, journalEntries };
+      return { transaction, journalEntries, tx };
     });
   }
 
