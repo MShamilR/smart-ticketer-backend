@@ -56,15 +56,11 @@ export const handleSignIn = async (
         process.env.REFRESH_TOKEN_SECRET!,
         { expiresIn: "1d" }
       );
-      const isIncomplete =
-        matchedUser.role === Roles.TICKETER &&
-        !(
-          // Saving refreshToken with current user
-          (await db
-            .update(users)
-            .set({ refreshToken })
-            .where(eq(users.email, matchedUser.email)))
-        );
+      await db
+        .update(users)
+        .set({ refreshToken })
+        .where(eq(users.email, matchedUser.email));
+      // handle incomplete forrole OPERATOR if no user is assigned
       new SuccessResponse("SIGNIN_SUCCESS", "User signed in successfully", {
         user: matchedUser.email,
         accessToken,
