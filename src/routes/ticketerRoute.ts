@@ -3,7 +3,7 @@ import {
   handleInviteTicketer,
   handleAcceptTicketer,
 } from "../controllers/ticketersController";
-import { authorize } from "../helpers/authorise";
+import { authorize } from "../helpers/authorize";
 
 const router = express.Router();
 

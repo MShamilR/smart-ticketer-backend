@@ -1,5 +1,5 @@
 import express from "express";
-import { authorize } from "../helpers/authorise";
+import { authorize } from "../helpers/authorize";
 import { handleInitiateTrip } from "../controllers/tripController";
 
 const router = express.Router();

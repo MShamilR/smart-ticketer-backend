@@ -3,7 +3,7 @@ import {
   handleCompleteTicket,
   handleInitiateTicket,
 } from "../controllers/ticketController";
-import { authorize } from "../helpers/authorise";
+import { authorize } from "../helpers/authorize";
 
 const router = express.Router();
 
