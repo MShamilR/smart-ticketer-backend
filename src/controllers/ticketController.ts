@@ -107,7 +107,8 @@ export const handleCompleteTicket = async (
 const calculateTotalFare = (passengers: Passenger, baseFare: number) => {
   let totalFare = 0;
   totalFare += passengers.adults * baseFare;
-  totalFare += passengers.children * baseFare * 0.5;
+  totalFare +=
+    passengers.children * baseFare * Number(process.env.TICKET_CHILD_RATIO);
   return totalFare;
 };
 

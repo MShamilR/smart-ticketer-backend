@@ -3,6 +3,7 @@ import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import EmitterBase from "./emitters/EmitterBase";
 import UserManager from "./utils/UserManager";
+import "dotenv/config";
 
 export const configureSocket = (server: HttpServer) => {
   const io = new Server(server);

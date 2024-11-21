@@ -6,6 +6,7 @@ import { trips } from "../db/schema/trips";
 import { ProtectedRequest } from "types/app-requests";
 import { SuccessResponse } from "../core/apiResponse";
 import { tripStatus } from "../db/schema/trips";
+import "dotenv/config";
 import jwt from "jsonwebtoken";
 
 type NewTrip = typeof trips.$inferInsert;

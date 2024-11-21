@@ -14,6 +14,7 @@ import { Address } from "nodemailer/lib/mailer";
 import { SuccessResponse } from "../core/apiResponse";
 import createLogger from "../utils/logger";
 import { ProtectedRequest } from "types/app-requests";
+import "dotenv/config";
 
 const logger = createLogger("user-controller");
 

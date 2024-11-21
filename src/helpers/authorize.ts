@@ -1,4 +1,3 @@
-import { integer } from "drizzle-orm/pg-core";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { appRoles } from "../db/schema/users";
@@ -8,6 +7,7 @@ import {
   BadRequestError,
 } from "../core/apiError";
 import { ProtectedRequest } from "types/app-requests";
+import "dotenv/config";
 
 // Test status: tested
 
