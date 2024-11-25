@@ -19,6 +19,7 @@ export const txnTypes = ["TOPUP", "CONSUME", "REFUND", 'CREATE'] as const;
 export const TRANSACTION_TYPES = createEnumObject(txnTypes);
 export const typeEnum = pgEnum("type", txnTypes);
 
+// Sequence Restart Done
 export const transactions = pgTable("transactions", {
   id: serial("id").primaryKey(),
   timestamp: timestamp("timestamp", { withTimezone: true })

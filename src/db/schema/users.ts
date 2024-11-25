@@ -29,7 +29,7 @@ export const appRoles = [
 export const Roles = createEnumObject(appRoles);
 
 export const rolesEnum = pgEnum("role", appRoles);
-
+// Sequence Restart Done
 export const users = pgTable("users", {
   id: serial("id").primaryKey().notNull(),
   terminal: varchar("terminal").notNull(),

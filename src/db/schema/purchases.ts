@@ -9,6 +9,7 @@ import {
 import { users } from "./users";
 import { payments } from "./payments";
 
+// Sequence Restart Done
 export const purchases = pgTable("purchases", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),

@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 
+// Sequence Restart Done
 export const paymentTypeEnum = pgEnum("payment_type", [
   "CARD",
   "BANK_TRANSFER",

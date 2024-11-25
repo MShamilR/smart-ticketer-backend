@@ -6,7 +6,6 @@ import {
   timestamp,
   serial
 } from "drizzle-orm/pg-core";
-import { users } from "./users";
 import { purchases } from "./purchases";
 
 export const invoices = pgTable("invoices", {

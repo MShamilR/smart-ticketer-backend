@@ -17,6 +17,7 @@ export const statusEnum = pgEnum("status", status);
 
 // Caution: In real world ticketers could be reassigned to other operators if they change their employer
 
+// Sequence Restart Done
 export const trips = pgTable("trips", {
   id: serial("id").primaryKey(),
   refId: uuid("ref_id").notNull().defaultRandom(),

@@ -14,7 +14,9 @@ import { Address } from "nodemailer/lib/mailer";
 import { SuccessResponse } from "../core/apiResponse";
 import createLogger from "../utils/logger";
 import { ProtectedRequest } from "types/app-requests";
+import * as OTPAuth from "otpauth";
 import "dotenv/config";
+import TwoFactorAuthManager from "../helpers/TwoFactorAuthManager";
 
 const logger = createLogger("user-controller");
 
@@ -80,6 +82,9 @@ export const handleSignUpEmail = async (
       logger.warn("Email already in use", { email });
       throw new BadRequestError("EMAIL_ALREADY_EXISTS", "Email already in use");
     }
+
+    // TEST
+    // TwoFactorAuthManager.dispatchEmail(email);
 
     dispatchVerificationEmail(email);
     logger.info("Verification email dispatched", { email });
@@ -226,10 +231,6 @@ export const handleGetUserDetails = async (
         ticketer: true,
       },
     });
-
-    // const response: Omit<User, "id" | "passwordHash" |"refreshToken" | "glAccountId" | "" > = {
-      
-    // };
 
     return new SuccessResponse(
       "SUCCESS",

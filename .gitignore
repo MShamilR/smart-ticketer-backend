@@ -6,3 +6,4 @@ temp.ts
 accounting.txt
 redis.ts
 .gitignore
+*.mjml

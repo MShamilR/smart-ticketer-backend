@@ -60,7 +60,7 @@ export const handleSignIn = async (
         .update(users)
         .set({ refreshToken })
         .where(eq(users.email, matchedUser.email));
-      // handle incomplete forrole OPERATOR if no user is assigned
+      // handle incomplete for role OPERATOR if no user is assigned
       new SuccessResponse("SIGNIN_SUCCESS", "User signed in successfully", {
         user: matchedUser.email,
         accessToken,

@@ -19,6 +19,7 @@ export const pymtTypes = ["CARD", "PAYHERE", "BANK_TRANSFER"] as const;
 export const TRANSACTION_TYPES = createEnumObject(pymtTypes);
 export const typeEnum = pgEnum("type", pymtTypes);
 
+// Sequence Restart Done
 export const payments = pgTable("payments", {
   id: serial("id").primaryKey(),
   timestamp: timestamp("timestamp", { withTimezone: true })

@@ -12,6 +12,7 @@ import { users } from "./users";
 import { buses } from "./buses";
 import { trips } from "./trips";
 
+// Sequence Restart Done
 export const tickets = pgTable("tickets", {
   id: serial("id").primaryKey(),
   tripId: integer("trip_id").references(() => trips.id),

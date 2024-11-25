@@ -6,6 +6,7 @@ import { operators } from "./operators";
 // A ticketer has one operator (employer) || An operator (employer) has many ticketers
 // A ticketer could be work in many buses, but limited to just one operator
 
+// Sequence Restart Done
 export const ticketers = pgTable("ticketers", {
   id: serial("id").primaryKey(),
   operatorId: integer("operator_id").references(() => operators.id),
