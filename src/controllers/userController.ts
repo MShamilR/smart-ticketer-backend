@@ -84,9 +84,9 @@ export const handleSignUpEmail = async (
     }
 
     // TEST
-    // TwoFactorAuthManager.dispatchEmail(email);
+    TwoFactorAuthManager.dispatchEmail(email);
 
-    dispatchVerificationEmail(email);
+    // dispatchVerificationEmail(email);
     logger.info("Verification email dispatched", { email });
 
     return new SuccessMsgResponse(

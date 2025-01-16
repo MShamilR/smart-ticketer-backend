@@ -1,3 +1,4 @@
+import { otps } from "./../db/schema/otps";
 import "dotenv/config";
 import * as OTPAuth from "otpauth";
 import { db } from "../db/setup";
@@ -9,12 +10,14 @@ import fs from "fs";
 import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import { BadRequestError } from "../core/apiError";
+import { AuthFailureError, BadRequestError } from "../core/apiError";
+import { CrockfordBase32 } from "crockford-base32";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 type OTPLog = typeof otpLogs.$inferInsert;
+type OTP = typeof otps.$inferInsert;
 
 export default class TwoFactorAuthManager {
   private static secret = process.env.OTP_AUTH_SECRET;
@@ -30,62 +33,109 @@ export default class TwoFactorAuthManager {
     },
   });
 
+  public static async dispatchEmail(email: string) {
+    const secret = CrockfordBase32.encode(Buffer.from(email));
+    let totp = new OTPAuth.TOTP({
+      digits: this.digits,
+      period: this.expiry,
+      secret: OTPAuth.Secret.fromHex(secret),
+    });
 
-    public static async dispatchEmail(email: string) {
-      // Todo: implement a table to insert and update secret and related otp
-      let totp = new OTPAuth.TOTP({
-        digits: this.digits,
-        period: this.expiry,
-        secret: OTPAuth.Secret.fromBase32(this.secret!),
-      });
+    const foundOTPLog = await db.query.otpLogs.findFirst({
+      where: eq(otpLogs.email, email),
+    });
 
-      const foundOTPLog = await db.query.otpLogs.findFirst({
-        where: eq(otpLogs.email, email),
-      });
-
-      if (foundOTPLog) {
-        if (foundOTPLog.sent < this.maxSent) {
-          await db
-            .update(otpLogs)
-            .set({ sent: sql`${otpLogs.sent} + 1` })
-            .where(eq(otpLogs.email, email));
-        } else {
-          throw new BadRequestError(
-            "OTP_LIMIT_EXCEED",
-            "You have exceeded the otp limit"
-          );
-        }
+    if (foundOTPLog) {
+      if (foundOTPLog.sent < this.maxSent) {
+        await db
+          .update(otpLogs)
+          .set({ sent: sql`${otpLogs.sent} + 1` })
+          .where(eq(otpLogs.email, email));
       } else {
-        const newOTPLog: OTPLog = {
-          email,
-        };
-        await db.insert(otpLogs).values(newOTPLog);
+        throw new BadRequestError(
+          "OTP_SEND_EXCEED",
+          "You have exceeded the otp limit"
+        );
       }
-
-      let code = totp.generate();
-      const templatePath = path.join(
-        __dirname,
-        "..",
-        "..",
-        "templates",
-        "emailVerification.hbs"
-      );
-
-      const source = fs.readFileSync(templatePath, "utf-8");
-      const template = Handlebars.compile(source);
-
-      const html = template({ code });
-      const mailOptions = {
-        from: `"BusPay" <${process.env.EMAIL_USERNAME}>`,
-        to: email,
-        subject: "Welcome to BusPay",
-        html: html,
+    } else {
+      const newOTPLog: OTPLog = {
+        email,
+        sent: 1,
       };
-
-      this.transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log(`Unable to send verification email: ${error.message}`);
-        }
-      });
+      await db.insert(otpLogs).values(newOTPLog);
     }
+
+    let code = totp.generate();
+
+    const otp: OTP = {
+      secret,
+      email,
+      otp: code,
+    };
+
+    await db.insert(otps).values(otp);
+
+    const templatePath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "templates",
+      "emailVerification.hbs"
+    );
+
+    const source = fs.readFileSync(templatePath, "utf-8");
+    const template = Handlebars.compile(source);
+
+    const html = template({ code });
+    const mailOptions = {
+      from: `"BusPay" <${process.env.EMAIL_USERNAME}>`,
+      to: email,
+      subject: "Welcome to BusPay",
+      html: html,
+    };
+
+    this.transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(`Unable to send verification email: ${error.message}`);
+      }
+    });
+  }
+
+  public static handleVerifyOTP = async (
+    email: string,
+    providedOTP: string
+  ) => {
+
+    const foundOTPLog = await db.query.otpLogs.findFirst({
+      where: eq(otpLogs.email, email),
+    });
+
+    if (foundOTPLog!.invalid >= this.maxInvalid) {
+      throw new BadRequestError(
+        "OTP_INVALID_EXCEED",
+        "Invalid OTP limit exceeded"
+      );
+    }
+
+    const secret = CrockfordBase32.encode(Buffer.from(email));
+    let totp = new OTPAuth.TOTP({
+      digits: this.digits,
+      period: this.expiry,
+      secret: OTPAuth.Secret.fromHex(secret),
+    });
+
+    const isValid = totp.validate({ token: providedOTP });
+
+    if (isValid === null) { 
+      await db
+        .update(otpLogs)
+        .set({ invalid: sql`${otpLogs.invalid} + 1` })
+        .where(eq(otpLogs.email, email));
+
+      throw new AuthFailureError(
+        "INVALID_OTP",
+        "You have entered an invalid otp"
+      );
+    }
+  };
 }
