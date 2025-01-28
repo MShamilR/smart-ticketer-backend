@@ -107,48 +107,29 @@ export const handleVerifyEmail = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.query.token as string;
-  jwt.verify(
-    token,
-    process.env.VERIFY_TOKEN_SECRET!,
-    async (err, decodedToken) => {
-      if (err) {
-        if (err.name === "TokenExpiredError") {
-          throw new BadRequestError(
-            "EXPIRED_VERIFICATION_LINK",
-            "The verification link has expired, Please resend link"
-          );
-        } else {
-          throw new BadRequestError(
-            "INVALID_VERIFICATION_LINK",
-            "Unable to validate verification link, Please resend link"
-          );
-        }
+  const { email, otp } = req.body;
+
+  try {
+    await TwoFactorAuthManager.handleVerifyOTP(email, otp);
+    const verifiedEmail: VerifiedEmail = {
+      email,
+    };
+    console.log(verifiedEmail);
+
+    const response = await db.insert(emails).values(verifiedEmail).returning();
+
+    new SuccessResponse(
+      "EMAIL_VERIFIED",
+      "Fill missing details to register account",
+      {
+        verified: true,
+        uuid: response[0].id,
+        email: response[0].email,
       }
-
-      const decoded = decodedToken as { email: string };
-
-      const verifiedEmail: VerifiedEmail = {
-        email: decoded.email,
-      };
-      console.log(verifiedEmail);
-
-      const response = await db
-        .insert(emails)
-        .values(verifiedEmail)
-        .returning();
-
-      new SuccessResponse(
-        "EMAIL_VERIFIED",
-        "Fill missing details to register account",
-        {
-          verified: true,
-          uuid: response[0].id,
-          email: response[0].email,
-        }
-      ).send(res);
-    }
-  );
+    ).send(res);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const handleCreateUser = async (
