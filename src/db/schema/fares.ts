@@ -1,15 +1,6 @@
-import {
-  integer,
-  pgEnum,
-  pgTable,
-  serial,
-  varchar,
-  jsonb,
-  real,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { pgTable, serial, numeric } from "drizzle-orm/pg-core";
 
 export const fares = pgTable("fares", {
   id: serial("id").primaryKey(),
-  amount: real("amount"),
+  amount: numeric("amount", { precision: 8, scale: 2 }),
 });

@@ -3,10 +3,8 @@ import {
   pgEnum,
   pgTable,
   serial,
-  varchar,
-  jsonb,
-  real,
   timestamp,
+  numeric,
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 
@@ -18,7 +16,7 @@ export const paymentTypeEnum = pgEnum("payment_type", [
 
 export const topups = pgTable("topups", {
   id: serial("id").primaryKey(),
-  amount: real("amount"),
+  amount: numeric("amount", { precision: 10, scale: 2 }),
   creditedAt: timestamp("credited_at").defaultNow(),
   paymentType: paymentTypeEnum("payment_type"),
   userId: integer("user_id").references(() => users.id),

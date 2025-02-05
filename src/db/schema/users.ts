@@ -45,7 +45,7 @@ export const users = pgTable("users", {
     relationship: string;
     mobileNumber: string;
   }>(),
-  creditBalance: real("credit_balance"),
+  creditBalance: numeric("credit_balance", { precision: 10, scale: 2 }),
   isActive: boolean("is_active"),
   isIncomplete: boolean("is_incomplete"),
   operatorId: integer("operator_id"),

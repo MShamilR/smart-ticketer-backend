@@ -1,10 +1,10 @@
 import {
   pgTable,
   varchar,
-  bigint,
   serial,
   timestamp,
   integer,
+  numeric,
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { payments } from "./payments";
@@ -16,6 +16,6 @@ export const purchases = pgTable("purchases", {
   timestamp: timestamp("timestamp", { withTimezone: true })
     .notNull()
     .defaultNow(),
-  amount: bigint("amount", { mode: "bigint" }),
+  amount: numeric("amount", { precision: 10, scale: 2 }),
   status: varchar("status", { length: 10 }),
 });

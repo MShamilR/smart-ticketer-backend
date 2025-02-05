@@ -1,8 +1,6 @@
 import {
   pgTable,
   varchar,
-  bigint,
-  timestamp,
   integer,
   serial,
   numeric,
@@ -14,5 +12,5 @@ export const invoiceItems = pgTable("invoice_items", {
   invoiceId: integer("invoice_id").references(() => invoices.id),
   subject: varchar("subject", { length: 50 }),
   type: varchar("type", { length: 20 }), // PURCHASE_ITEM | ADDON | DISCOUNT |
-  amount: numeric("amount"),
+  amount: numeric("amount", { precision: 10, scale: 2 }),
 });

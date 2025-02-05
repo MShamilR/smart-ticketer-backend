@@ -1,11 +1,11 @@
 import {
   pgTable,
   varchar,
-  bigint,
   timestamp,
   pgEnum,
   serial,
-  integer
+  integer,
+  numeric,
 } from "drizzle-orm/pg-core";
 import createEnumObject from "../../utils/enumGenerator";
 import { invoices } from "./invoices";
@@ -28,12 +28,10 @@ export const payments = pgTable("payments", {
   // transactionId: integer("transaction_id").references(
   //   () => transactions.id
   // ),
-  invoiceId: integer("invoice_id").references(
-    () => invoices.id
-  ),
+  invoiceId: integer("invoice_id").references(() => invoices.id),
   type: typeEnum("type").notNull(),
   paymentMethod: varchar("payment_method", { length: 20 }),
-  amount: bigint("amount", { mode: "bigint" }).notNull(),
+  amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
   status: statusEnum("status"),
 });
 

@@ -2,10 +2,10 @@ import {
   integer,
   pgTable,
   serial,
-  real,
   timestamp,
   uuid,
   pgEnum,
+  numeric,
 } from "drizzle-orm/pg-core";
 import { ticketers } from "./ticketers";
 import createEnumObject from "../../utils/enumGenerator";
@@ -26,7 +26,7 @@ export const trips = pgTable("trips", {
     .defaultNow(),
   endTime: timestamp("end_time", { withTimezone: true }).defaultNow(),
   ticketsIssued: integer("tickets_issued"),
-  grossIncome: real("gross_income"),
+  grossIncome: numeric("gross_income", { precision: 10, scale: 2 }),
   status: statusEnum("status"),
   ticketerId: integer("ticketer_id").references(() => ticketers.id),
   operatorId: integer("operator_id").references(() => operators.id),
