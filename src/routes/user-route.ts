@@ -1,10 +1,9 @@
 import { validateSignUpEmail } from "../validations/user-validation";
+import { handleSignUpEmail } from "../controllers/user/sign-up-email-controller";
+import { handleVerifyEmail } from "../controllers/user/verify-email-controller";
+import { handleCreateUser } from "../controllers/user/create-user-controller";
 import express from "express";
-import {
-  handleCreateUser,
-  handleSignUpEmail,
-  handleVerifyEmail,
-} from "../controllers/user-controller";
+
 const router = express.Router();
 
 router.post("/email", validateSignUpEmail, handleSignUpEmail);

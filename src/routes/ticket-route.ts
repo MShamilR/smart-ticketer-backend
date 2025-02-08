@@ -1,9 +1,7 @@
 import express from "express";
-import {
-  handleCompleteTicket,
-  handleInitiateTicket,
-} from "../controllers/ticket-controller";
 import { authorize } from "../helpers/authorize";
+import { handleInitiateTicket } from "../controllers/ticket/initiate-ticket-controller";
+import { handleCompleteTicket } from "../controllers/ticket/complete-ticket-controller";
 
 const router = express.Router();
 

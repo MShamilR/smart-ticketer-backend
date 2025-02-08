@@ -1,9 +1,7 @@
 import express from "express";
-import {
-  handleInviteTicketer,
-  handleAcceptTicketer,
-} from "../controllers/ticketer-controller";
 import { authorize } from "../helpers/authorize";
+import { handleInviteTicketer } from "../controllers/ticketer/invite-ticketer-controller";
+import { handleAcceptTicketer } from "../controllers/ticketer/accept-ticketer-controller";
 
 const router = express.Router();
 

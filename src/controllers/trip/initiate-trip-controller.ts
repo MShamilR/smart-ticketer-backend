@@ -1,14 +1,13 @@
 import { Response, NextFunction } from "express";
-import { db } from "../db/setup";
-import { users } from "../db/schema/users";
+import { db } from "../../db/setup";
+import { users } from "../../db/schema/users";
 import { eq } from "drizzle-orm";
-import { trips } from "../db/schema/trips";
+import { trips } from "../../db/schema/trips";
 import { ProtectedRequest } from "types/app-requests";
-import { SuccessResponse } from "../core/api-response";
-import { tripStatus } from "../db/schema/trips";
+import { SuccessResponse } from "../../core/api-response";
+import { tripStatus } from "../../db/schema/trips";
 import "dotenv/config";
 import jwt from "jsonwebtoken";
-import Decimal from "decimal.js";
 
 type NewTrip = typeof trips.$inferInsert;
 

@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { ProtectedRequest } from "types/app-requests";
-import { db } from "../db/setup";
+import { db } from "../../db/setup";
 import { eq } from "drizzle-orm";
-import { users } from "../db/schema/users";
-import { buses } from "../db/schema/buses";
-import { BadRequestError } from "../core/api-error";
-import { SuccessResponse } from "../core/api-response";
+import { users } from "../../db/schema/users";
+import { buses } from "../../db/schema/buses";
+import { BadRequestError } from "../../core/api-error";
+import { SuccessResponse } from "../../core/api-response";
 
 type Bus = typeof buses.$inferInsert;
 

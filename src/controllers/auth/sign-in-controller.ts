@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { eq } from "drizzle-orm";
-import { db } from "../db/setup";
-import { Roles, users } from "../db/schema/users";
-import { BadRequestError, AuthFailureError } from "../core/api-error";
-import { SuccessResponse } from "../core/api-response";
+import { db } from "../../db/setup";
+import { Roles, users } from "../../db/schema/users";
+import { BadRequestError, AuthFailureError } from "../../core/api-error";
+import { SuccessResponse } from "../../core/api-response";
 import bcrypt from "bcryptjs";
 import "dotenv/config";
 import SignInRequest from "interfaces/requests/sign-in-request";
-import createLogger from "../utils/logger";
+import createLogger from "../../utils/logger";
 
 const logger = createLogger("auth-controller");
 
@@ -77,11 +77,4 @@ export const handleSignIn = async (
   }
 };
 
-export const handleRefreshToken = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-  } catch (error) {}
-};
+

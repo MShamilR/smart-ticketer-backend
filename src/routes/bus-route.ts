@@ -1,5 +1,6 @@
 import express from "express";
-import { handleRegisterBus } from "../controllers/bus-controller";
+
+import { handleRegisterBus } from "../controllers/bus/register-bus-controller";
 import { authorize } from "../helpers/authorize";
 
 const router = express.Router();
