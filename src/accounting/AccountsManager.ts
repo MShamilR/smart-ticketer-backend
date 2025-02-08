@@ -11,7 +11,7 @@ import { payments, pymtTypes } from "../db/schema/payments";
 import "dotenv/config";
 import { AccountsManagerResponse } from "./interfaces/AccountsManagerResponse";
 import { db } from "db/setup";
-import { eq } from "drizzle-orm";
+import Decimal from "decimal.js";
 
 type User = typeof users.$inferInsert;
 type Transaction = typeof transactions.$inferInsert;
@@ -53,7 +53,7 @@ export default class AccountsManager {
 
   public static async creditsConsume(
     userId: number,
-    amount: number
+    amount: Decimal
   ): Promise<AccountsManagerResponse> {
     return await db.transaction(async (tx) => {
       const transaction: Transaction =

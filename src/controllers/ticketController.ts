@@ -12,6 +12,7 @@ import {
   Passenger,
 } from "interfaces/requests/IssueTicketRequest";
 import AccountsManager from "accounting/AccountsManager";
+import Decimal from "decimal.js";
 
 type User = typeof users.$inferInsert;
 interface TripInfo {
@@ -85,11 +86,13 @@ export const handleCompleteTicket = async (
       where: eq(users.id, id),
     });
 
-    const updatedCreditBalance = user!.creditBalance! - totalFare;
+    const updatedCreditBalance = new Decimal(user!.creditBalance!).minus(
+      totalFare
+    );
 
     await db
       .update(users)
-      .set({ creditBalance: updatedCreditBalance })
+      .set({ creditBalance: updatedCreditBalance.toString() })
       .where(eq(users.id, user!.id!));
 
     return new SuccessResponse("TICKET_ISSUED", "Ticket issued successfully", {
@@ -104,11 +107,18 @@ export const handleCompleteTicket = async (
   }
 };
 
-const calculateTotalFare = (passengers: Passenger, baseFare: number) => {
-  let totalFare = 0;
-  totalFare += passengers.adults * baseFare;
-  totalFare +=
-    passengers.children * baseFare * Number(process.env.TICKET_CHILD_RATIO);
+const calculateTotalFare = (
+  passengers: Passenger,
+  baseFare: number
+): Decimal => {
+  let totalFare = new Decimal(0);
+  totalFare = totalFare.plus(new Decimal(passengers.adults).times(baseFare));
+  totalFare = totalFare.plus(
+    new Decimal(passengers.children)
+      .times(baseFare)
+      .times(new Decimal(process.env.TICKET_CHILD_RATIO!))
+  );
+
   return totalFare;
 };
 

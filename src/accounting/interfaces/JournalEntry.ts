@@ -1,6 +1,8 @@
+import Decimal from "decimal.js";
+
 export interface JournalEntry {
   accountId: string;
   type: string;
-  amount: number;
+  amount: Decimal;
   description: string;
 }

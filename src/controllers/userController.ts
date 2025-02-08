@@ -170,7 +170,7 @@ export const handleCreateUser = async (
           email,
           passwordHash: hashedPassword,
           role,
-          creditBalance: 0,
+          creditBalance: "0.00",
           isActive: true,
           isIncomplete: false,
         };

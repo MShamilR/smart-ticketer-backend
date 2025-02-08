@@ -8,6 +8,7 @@ import { SuccessResponse } from "../core/apiResponse";
 import { tripStatus } from "../db/schema/trips";
 import "dotenv/config";
 import jwt from "jsonwebtoken";
+import Decimal from "decimal.js";
 
 type NewTrip = typeof trips.$inferInsert;
 
@@ -45,7 +46,7 @@ export const handleInitiateTrip = async (
   const newTrip: NewTrip = {
     endTime: null,
     ticketsIssued: 0,
-    grossIncome: 0.0,
+    grossIncome: "0.00",
     status: tripStatus.ONGOING,
     ticketerId,
     operatorId,

@@ -1,3 +1,4 @@
+import { Decimal } from "decimal.js";
 import { glAccounts } from "../db/schema/glAccounts";
 import { JournalEntry } from "./interfaces/JournalEntry";
 import { eq } from "drizzle-orm";
@@ -30,31 +31,31 @@ export default class GLEntryCreator {
   private static calculateStanding(
     glAccount: GLAccount,
     journalEntry: JournalEntry
-  ): number {
+  ): Decimal {
     const accountType = glAccount.type;
-    const balance = glAccount.balance;
+    const balance = new Decimal(glAccount.balance);
 
     const entryType = journalEntry.type;
     const amount = journalEntry.amount;
 
     if (accountType === this.LIABILITY || accountType === this.INCOME) {
       if (entryType === this.DEBIT) {
-        return balance - amount;
+        return balance.minus(amount)
       } else {
-        return balance + amount;
+        return balance.plus(amount);
       }
     } else {
       if (entryType === this.DEBIT) {
-        return balance + amount;
+        return balance.plus(amount)
       } else {
-        return balance - amount;
+        return balance.minus(amount);
       }
     }
   }
 
   public static async updateGLAccount(
     glAccount: GLAccount,
-    newStanding: number,
+    newStanding: Decimal,
     tx: any
   ) {
     await tx
@@ -66,16 +67,16 @@ export default class GLEntryCreator {
   public static async saveGLEntry(
     journalEntry: JournalEntry,
     transaction: Transaction,
-    standing: number,
+    standing: Decimal,
     tx: any
   ) {
     const newGLEntry: GLEntry = {
       description: journalEntry.description,
       type: journalEntry.type,
       glAccountId: journalEntry.accountId,
-      amount: journalEntry.amount,
+      amount: journalEntry.amount.toString(),
       transactionId: transaction.id!,
-      standing,
+      standing: standing.toString(),
     };
 
     await tx.insert(glEntries).values(newGLEntry);

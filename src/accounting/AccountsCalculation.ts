@@ -2,6 +2,7 @@ import { invoiceItems } from "./../db/schema/invoiceItems";
 import { GL_ACCOUNTS } from "./constants/gl-accounts";
 import { JournalEntry } from "./interfaces/JournalEntry";
 import { pymtTypes } from "../db/schema/payments";
+import Decimal from "decimal.js";
 
 type InvoiceItem = typeof invoiceItems.$inferInsert;
 type PaymentType = (typeof pymtTypes)[number];
@@ -10,9 +11,9 @@ export default class AccountsCalculation {
   private static DEBIT = "DEBIT";
   private static CREDIT = "CREDIT";
 
-  private static topupAmount = Number(0);
-  private static processingFee = Number(0);
-  private static totalAmount = Number(0);
+  private static topupAmount = new Decimal(0);
+  private static processingFee = new Decimal(0);
+  private static totalAmount = new Decimal(0);
 
   private static entries: JournalEntry[];
 
@@ -41,7 +42,7 @@ export default class AccountsCalculation {
 
   public static getCreditsConsume(
     userGLAccountId: string,
-    amount: number
+    amount: Decimal
   ): JournalEntry[] {
     this.addJournalEntry(
       GL_ACCOUNTS.USER_CREDITS,
@@ -66,53 +67,53 @@ export default class AccountsCalculation {
   ) {
     invoiceItems.forEach((item) => {
       const subject = item.subject;
-      const amount = Number(item.amount!);
+      const amount = new Decimal(item.amount!);
       const type = item.type;
       this.setCharges(amount, type!);
       this.updateTotalAmount(amount, type!);
     });
     const commisionRate = this.getIPGCommision(type);
-    this.processingFee = this.totalAmount * commisionRate;
+    this.processingFee = this.totalAmount.times(commisionRate);
   }
 
-  private static updateTotalAmount(amount: number, type: string): void {
+  private static updateTotalAmount(amount: Decimal, type: string): void {
     switch (type) {
       case "PURCHASE_ITEM":
       case "CHARGE":
-        this.totalAmount += amount;
+        this.totalAmount.add(amount);
         break;
       case "ADDON":
-        this.totalAmount + -amount;
+        this.totalAmount.minus(amount);
         break;
       default:
         break;
     }
   }
 
-  private static setCharges(amount: number, type: string): void {
+  private static setCharges(amount: Decimal, type: string): void {
     switch (type) {
       case "PURCHASE_ITEM":
-        this.topupAmount += amount;
+        this.topupAmount.add(amount);
         break;
       default:
         break;
     }
   }
 
-  private static getIPGCommision(paymentType: PaymentType): number {
+  private static getIPGCommision(paymentType: PaymentType): Decimal {
     switch (paymentType) {
       case "PAYHERE":
-        return Number(process.env.COMMISSION_PAYHERE!);
+        return new Decimal(process.env.COMMISSION_PAYHERE!);
         break;
       default:
-        return Number(0);
+        return new Decimal(0);
     }
   }
 
   private static addJournalEntry(
     accountId: string,
     type: string,
-    amount: number,
+    amount: Decimal,
     description: string
   ) {
     const entry: JournalEntry = { accountId, type, amount, description };

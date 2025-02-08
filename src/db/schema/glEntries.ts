@@ -19,7 +19,7 @@ export const glEntries = pgTable("gl_entries", {
   ),
   transactionId: integer("transaction_id").references(() => transactions.id),
   description: varchar("description", { length: 100 }),
-  amount: numeric("amount", { precision: 10, scale: 2 }),
-  standing: numeric("standing", { precision: 15, scale: 2 }),
+  amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
+  standing: numeric("standing", { precision: 15, scale: 2 }).notNull(),
   type: varchar("type", { length: 20 }), // CREDIT | DEBIT
 });
