@@ -4,8 +4,8 @@ import { db } from "../db/setup";
 import { eq } from "drizzle-orm";
 import { users } from "../db/schema/users";
 import { buses } from "../db/schema/buses";
-import { BadRequestError } from "../core/apiError";
-import { SuccessResponse } from "../core/apiResponse";
+import { BadRequestError } from "../core/api-error";
+import { SuccessResponse } from "../core/api-response";
 
 type Bus = typeof buses.$inferInsert;
 

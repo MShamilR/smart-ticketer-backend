@@ -1,6 +1,6 @@
 import { Decimal } from "decimal.js";
 import { glAccounts } from "../db/schema/glAccounts";
-import { JournalEntry } from "./interfaces/JournalEntry";
+import { JournalEntry } from "./interfaces/journal-entry";
 import { eq } from "drizzle-orm";
 import { transactions } from "../db/schema/transactions";
 import { glEntries } from "../db/schema/glEntries";
@@ -40,13 +40,13 @@ export default class GLEntryCreator {
 
     if (accountType === this.LIABILITY || accountType === this.INCOME) {
       if (entryType === this.DEBIT) {
-        return balance.minus(amount)
+        return balance.minus(amount);
       } else {
         return balance.plus(amount);
       }
     } else {
       if (entryType === this.DEBIT) {
-        return balance.plus(amount)
+        return balance.plus(amount);
       } else {
         return balance.minus(amount);
       }

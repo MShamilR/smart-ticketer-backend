@@ -1,5 +1,5 @@
-import UserManager from "socket.io/utils/UserManager";
-import EmitterBase from "./EmitterBase";
+import UserManager from "socket.io/utils/user-manager";
+import EmitterBase from "./emitter-base";
 
 export default class InvitationsEmitter extends EmitterBase {
   public static emitInvitation = (receiverId: string) => {

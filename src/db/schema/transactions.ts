@@ -7,7 +7,7 @@ import {
   serial,
   integer,
 } from "drizzle-orm/pg-core";
-import createEnumObject from "../../utils/enumGenerator";
+import createEnumObject from "../../utils/enum-generator";
 import { purchases } from "./purchases";
 import { invoices } from "./invoices";
 
@@ -15,7 +15,7 @@ import { invoices } from "./invoices";
 // export const TRANSACTION_STATUSES = createEnumObject(txnStatuses);
 // export const statusEnum = pgEnum("status", txnStatuses);
 
-export const txnTypes = ["TOPUP", "CONSUME", "REFUND", 'CREATE'] as const;
+export const txnTypes = ["TOPUP", "CONSUME", "REFUND", "CREATE"] as const;
 export const TRANSACTION_TYPES = createEnumObject(txnTypes);
 export const typeEnum = pgEnum("type", txnTypes);
 

@@ -14,7 +14,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { buses } from "./buses";
 import { operators } from "./operators";
-import createEnumObject from "../../utils/enumGenerator";
+import createEnumObject from "../../utils/enum-generator";
 import { ticketers } from "./ticketers";
 import { invites } from "./invites";
 import { glAccounts } from "./glAccounts";

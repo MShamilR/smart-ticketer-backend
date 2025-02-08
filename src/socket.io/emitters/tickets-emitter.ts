@@ -1,5 +1,5 @@
-import UserManager from "socket.io/utils/UserManager";
-import EmitterBase from "./EmitterBase";
+import UserManager from "socket.io/utils/user-manager";
+import EmitterBase from "./emitter-base";
 
 export default class TicketsEmitter extends EmitterBase {
   public static emitTicketConfirm = (passengerId: string) => {

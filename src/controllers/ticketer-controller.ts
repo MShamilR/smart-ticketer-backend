@@ -8,8 +8,8 @@ import {
   BadRequestError,
   ForbiddenError,
   NotFoundError,
-} from "../core/apiError";
-import { SuccessMsgResponse } from "../core/apiResponse";
+} from "../core/api-error";
+import { SuccessMsgResponse } from "../core/api-response";
 import { ticketers } from "db/schema/ticketers";
 import { inviteStatus } from "../db/schema/invites";
 

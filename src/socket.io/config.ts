@@ -1,8 +1,8 @@
 import { Server as HttpServer } from "http";
 import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
-import EmitterBase from "./emitters/EmitterBase";
-import UserManager from "./utils/UserManager";
+import EmitterBase from "./emitters/emitter-base";
+import UserManager from "./utils/user-manager";
 import "dotenv/config";
 
 export const configureSocket = (server: HttpServer) => {

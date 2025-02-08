@@ -5,7 +5,7 @@ import {
   AuthFailureError,
   ForbiddenError,
   BadRequestError,
-} from "../core/apiError";
+} from "../core/api-error";
 import { ProtectedRequest } from "types/app-requests";
 import "dotenv/config";
 

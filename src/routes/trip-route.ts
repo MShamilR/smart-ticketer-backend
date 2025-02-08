@@ -1,6 +1,6 @@
 import express from "express";
 import { authorize } from "../helpers/authorize";
-import { handleInitiateTrip } from "../controllers/tripController";
+import { handleInitiateTrip } from "../controllers/trip-controller";
 
 const router = express.Router();
 

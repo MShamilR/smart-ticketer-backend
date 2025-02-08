@@ -1,5 +1,5 @@
 import { integer, pgTable, serial, boolean, pgEnum } from "drizzle-orm/pg-core";
-import createEnumObject from "../../utils/enumGenerator";
+import createEnumObject from "../../utils/enum-generator";
 import { operators } from "./operators";
 import { users } from "./users";
 

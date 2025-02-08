@@ -1,7 +1,7 @@
-import { JournalEntry } from "./interfaces/JournalEntry";
-import TransactionsManager from "./TransactionsManager";
-import AccountsCalculation from "./AccountsCalculation";
-import GLEntryCreator from "./GLEntryCreator";
+import { JournalEntry } from "./interfaces/journal-entry";
+import TransactionsManager from "./transactions-manager";
+import AccountsCalculation from "./accounts-calculation";
+import GLEntryCreator from "./gl-entry-creator";
 import { transactions } from "../db/schema/transactions";
 import { invoiceItems } from "../db/schema/invoiceItems";
 import { invoices } from "../db/schema/invoices";
@@ -9,7 +9,7 @@ import { users } from "../db/schema/users";
 import { TRANSACTION_TYPES } from "../db/schema/transactions";
 import { payments, pymtTypes } from "../db/schema/payments";
 import "dotenv/config";
-import { AccountsManagerResponse } from "./interfaces/AccountsManagerResponse";
+import { AccountsManagerResponse } from "./interfaces/accounts-manager-response";
 import { db } from "db/setup";
 import Decimal from "decimal.js";
 

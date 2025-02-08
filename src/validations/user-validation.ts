@@ -1,12 +1,12 @@
 import { body, check, validationResult } from "express-validator";
 import { Request, Response, NextFunction } from "express";
-import { BadRequestError } from "../core/apiError";
+import { BadRequestError } from "../core/api-error";
 
 export const validateSignUpEmail = [
   body("email").isEmail().withMessage("Email must be a valid email address"),
   (req: Request, res: Response, next: NextFunction) => {
-      const errors = validationResult(req);
-      console.log(errors)
+    const errors = validationResult(req);
+    console.log(errors);
     if (!errors.isEmpty()) {
       throw new BadRequestError(
         "INVALID_REQUEST",

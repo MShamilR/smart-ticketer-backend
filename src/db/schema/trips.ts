@@ -8,7 +8,7 @@ import {
   numeric,
 } from "drizzle-orm/pg-core";
 import { ticketers } from "./ticketers";
-import createEnumObject from "../../utils/enumGenerator";
+import createEnumObject from "../../utils/enum-generator";
 import { operators } from "./operators";
 
 export const status = ["ONGOING", "COMPLETE", "TERMINATED"] as const;

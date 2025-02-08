@@ -2,7 +2,7 @@ import express from "express";
 import {
   handleInviteTicketer,
   handleAcceptTicketer,
-} from "../controllers/ticketersController";
+} from "../controllers/ticketer-controller";
 import { authorize } from "../helpers/authorize";
 
 const router = express.Router();

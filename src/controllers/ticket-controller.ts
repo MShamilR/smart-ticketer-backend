@@ -1,8 +1,8 @@
 import { NextFunction, Response } from "express";
 import { ProtectedRequest } from "../types/app-requests";
-import { BadRequestError, ForbiddenError } from "../core/apiError";
+import { BadRequestError, ForbiddenError } from "../core/api-error";
 import { users } from "../db/schema/users";
-import { SuccessResponse } from "../core/apiResponse";
+import { SuccessResponse } from "../core/api-response";
 import jwt from "jsonwebtoken";
 import { db } from "../db/setup";
 import { eq } from "drizzle-orm";
@@ -10,8 +10,8 @@ import "dotenv/config";
 import {
   IssueTicketRequest,
   Passenger,
-} from "interfaces/requests/IssueTicketRequest";
-import AccountsManager from "accounting/AccountsManager";
+} from "interfaces/requests/issue-ticket-request";
+import AccountsManager from "accounting/accounts-manager";
 import Decimal from "decimal.js";
 
 type User = typeof users.$inferInsert;

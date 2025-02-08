@@ -1,6 +1,6 @@
-import { invoiceItems } from "./../db/schema/invoiceItems";
+import { invoiceItems } from "../db/schema/invoiceItems";
 import { GL_ACCOUNTS } from "./constants/gl-accounts";
-import { JournalEntry } from "./interfaces/JournalEntry";
+import { JournalEntry } from "./interfaces/journal-entry";
 import { pymtTypes } from "../db/schema/payments";
 import Decimal from "decimal.js";
 

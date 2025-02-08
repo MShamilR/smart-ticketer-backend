@@ -1,4 +1,4 @@
-import { otps } from "./../db/schema/otps";
+import { otps } from "../db/schema/otps";
 import "dotenv/config";
 import * as OTPAuth from "otpauth";
 import { db } from "../db/setup";
@@ -10,7 +10,7 @@ import fs from "fs";
 import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import { AuthFailureError, BadRequestError } from "../core/apiError";
+import { AuthFailureError, BadRequestError } from "../core/api-error";
 import { CrockfordBase32 } from "crockford-base32";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -105,7 +105,6 @@ export default class TwoFactorAuthManager {
     email: string,
     providedOTP: string
   ) => {
-
     const foundOTPLog = await db.query.otpLogs.findFirst({
       where: eq(otpLogs.email, email),
     });
@@ -126,7 +125,7 @@ export default class TwoFactorAuthManager {
 
     const isValid = totp.validate({ token: providedOTP });
 
-    if (isValid === null) { 
+    if (isValid === null) {
       await db
         .update(otpLogs)
         .set({ invalid: sql`${otpLogs.invalid} + 1` })

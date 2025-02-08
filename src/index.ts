@@ -1,15 +1,15 @@
 import express, { Request, Response, NextFunction } from "express";
 import { createServer } from "node:http";
-import userRoute from "./routes/userRoute";
-import authRoute from "./routes/authRoute";
-import busRoute from "./routes/busRoute";
-import tripRoute from "./routes/tripRoute";
+import userRoute from "./routes/user-route";
+import authRoute from "./routes/auth-route";
+import busRoute from "./routes/bus-route";
+import tripRoute from "./routes/trip-route";
 import {
   NotFoundError,
   ApiError,
   InternalError,
   ErrorType,
-} from "./core/apiError";
+} from "./core/api-error";
 import "dotenv/config";
 import { configureSocket } from "./socket.io/config";
 import createLogger from "./utils/logger";

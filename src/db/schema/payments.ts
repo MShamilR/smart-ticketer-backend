@@ -7,7 +7,7 @@ import {
   integer,
   numeric,
 } from "drizzle-orm/pg-core";
-import createEnumObject from "../../utils/enumGenerator";
+import createEnumObject from "../../utils/enum-generator";
 import { invoices } from "./invoices";
 import { transactions } from "./transactions";
 

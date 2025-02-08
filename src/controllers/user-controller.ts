@@ -4,19 +4,19 @@ import jwt from "jsonwebtoken";
 import { db } from "../db/setup";
 import { users } from "../db/schema/users";
 import { emails } from "../db/schema/emails";
-import { BadRequestError } from "../core/apiError";
-import { CreatedMsgResponse, SuccessMsgResponse } from "../core/apiResponse";
-import generateId from "../utils/idGenerator";
+import { BadRequestError } from "../core/api-error";
+import { CreatedMsgResponse, SuccessMsgResponse } from "../core/api-response";
+import generateId from "../utils/id-generator";
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import * as EmailValidator from "email-validator";
 import { Address } from "nodemailer/lib/mailer";
-import { SuccessResponse } from "../core/apiResponse";
+import { SuccessResponse } from "../core/api-response";
 import createLogger from "../utils/logger";
 import { ProtectedRequest } from "types/app-requests";
 import * as OTPAuth from "otpauth";
 import "dotenv/config";
-import TwoFactorAuthManager from "../helpers/TwoFactorAuthManager";
+import TwoFactorAuthManager from "../helpers/two-factor-auth-manager";
 
 const logger = createLogger("user-controller");
 
