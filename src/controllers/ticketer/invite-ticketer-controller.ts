@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ProtectedRequest } from "types/app-requests";
+import { ProtectedRequest } from "../../types/app-requests";
 import { db } from "../../db/setup";
 import { eq } from "drizzle-orm";
 import { users, Roles } from "../../db/schema/users";
@@ -18,7 +18,7 @@ export const handleInviteTicketer = async (
 ) => {
   try {
     const { id } = req.user!; // decoded from token
-    const { inviteeId } = req.body; // single user per request
+    const { inviteeId, busId } = req.body; // single user per request
 
     const authorisedUser = await db.query.users.findFirst({
       where: eq(users.id, id),
@@ -32,6 +32,7 @@ export const handleInviteTicketer = async (
     const newInvite: NewInvite = {
       operatorId,
       userId: inviteeId,
+      busId: busId,
       status: inviteStatus.PENDING,
     };
 

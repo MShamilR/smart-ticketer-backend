@@ -65,7 +65,7 @@ export const handleAcceptTicketer = async (
     console.log(foundInvite);
 
     const NewTicketer: NewTicketer = {
-      operatorId: foundInvite.operatorId,
+      busId: foundInvite.busId,
       userId: foundInvite.userId,
     };
 

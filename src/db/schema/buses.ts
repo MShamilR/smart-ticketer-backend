@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { operators } from "./operators";
 import { ticketers } from "./ticketers";
+import { routes } from "./routes";
 
 export const buses = pgTable("buses", {
   id: serial("id").primaryKey(),
@@ -17,13 +18,15 @@ export const buses = pgTable("buses", {
     .references(() => operators.id)
     .notNull(),
   registrationPlate: varchar("registration_plate", { length: 10 }),
-  routeNo: varchar("route_no", { length: 10 }),
-  stops: integer("stops"),
+  routeId: integer("route_id")
+    .references(() => routes.id)
+    .notNull(),
 });
 
 export const busesRelations = relations(buses, ({ one, many }) => ({
   operators: one(operators),
   ticketers: many(ticketers),
+  routes: one(routes),
   // invitee: one(operators, {
   //   fields: [buses.operatorId],
   //   references: [operators.id],

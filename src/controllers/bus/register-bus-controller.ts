@@ -16,8 +16,8 @@ export const handleRegisterBus = async (
 ) => {
   try {
     const { email } = req.user!;
-    const { registrationPlate, routeNo, stops } = req.body;
-    if (!registrationPlate || !routeNo || !stops) {
+    const { registrationPlate, routeId } = req.body;
+    if (!registrationPlate || !routeId) {
       throw new BadRequestError(
         "NOT_PROVIDED",
         "Please provide all required data"
@@ -32,15 +32,12 @@ export const handleRegisterBus = async (
       },
     });
 
-    const userId = authorisedUser?.id;
-    const operatorId = authorisedUser?.operatorId;
+    const operatorId = authorisedUser?.operatorId!;
 
     const newBus: Bus = {
-      userId,
       operatorId,
       registrationPlate,
-      routeNo,
-      stops,
+      routeId,
     };
 
     const response = await db.insert(buses).values(newBus).returning();
@@ -49,8 +46,6 @@ export const handleRegisterBus = async (
       id: response[0].id,
       operator: authorisedUser?.operator?.tradeName,
       registrationPlate: response[0].registrationPlate,
-      routeNo: response[0].routeNo,
-      stops: response[0].stops,
     }).send(res);
   } catch (error) {
     next(error);
