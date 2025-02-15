@@ -8,23 +8,24 @@ import {
   varchar,
   jsonb,
 } from "drizzle-orm/pg-core";
-import { users } from "./users";
 import { operators } from "./operators";
 import { ticketers } from "./ticketers";
 
 export const buses = pgTable("buses", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
-  operatorId: integer("operator_id").references(() => operators.id),
+  operatorId: integer("operator_id")
+    .references(() => operators.id)
+    .notNull(),
   registrationPlate: varchar("registration_plate", { length: 10 }),
   routeNo: varchar("route_no", { length: 10 }),
   stops: integer("stops"),
 });
 
 export const busesRelations = relations(buses, ({ one, many }) => ({
-  invitee: one(operators, {
-    fields: [buses.operatorId],
-    references: [operators.id],
-  }),
+  operators: one(operators),
   ticketers: many(ticketers),
+  // invitee: one(operators, {
+  //   fields: [buses.operatorId],
+  //   references: [operators.id],
+  // }),
 }));

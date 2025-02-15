@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { ticketers } from "./ticketers";
+import { buses } from "./buses";
 
 export const ownershipEnum = pgEnum("ownership", ["state", "private"]);
 
@@ -23,5 +24,6 @@ export const operators = pgTable("operators", {
 
 export const operatorsRelations = relations(operators, ({ many }) => ({
   users: many(users),
+  buses: many(buses),
   ticketers: many(ticketers),
 }));

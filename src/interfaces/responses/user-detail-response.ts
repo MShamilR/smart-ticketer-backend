@@ -4,10 +4,11 @@ import Decimal from "decimal.js";
 
 export interface UserDetailsResponse {
   email: string;
-  role: typeof Roles;
+  role: keyof typeof Roles;
   firstName: string;
   lastName: string;
   creditBalance: Decimal;
   qrCode: string;
-  ticketerDetails: TicketerDetailsResponse;
+  ticketerDetails: TicketerDetailsResponse | null;
+  
 }

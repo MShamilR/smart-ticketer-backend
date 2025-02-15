@@ -3,6 +3,6 @@ import { ActiveSessionResponse } from "./active-session-response";
 
 export interface TicketerDetailsResponse {
   tradeName: string;
-  ticketFares: TicketFareResponse[];
-  activeSession: ActiveSessionResponse;
+  // ticketFares: TicketFareResponse[];
+  activeSession: ActiveSessionResponse | null;
 }

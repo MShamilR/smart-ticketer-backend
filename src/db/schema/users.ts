@@ -33,9 +33,10 @@ export const rolesEnum = pgEnum("role", appRoles);
 export const users = pgTable("users", {
   id: serial("id").primaryKey().notNull(),
   terminal: varchar("terminal").notNull(),
-  firstName: varchar("first_name", { length: 100 }),
-  lastName: varchar("last_name", { length: 100 }),
+  firstName: varchar("first_name", { length: 100 }).notNull(),
+  lastName: varchar("last_name", { length: 100 }).notNull(),
   email: varchar("email", { length: 100 }).unique().notNull(),
+  qrCode: varchar("qr_code", { length: 10 }).unique().notNull(),
   passwordHash: varchar("password_hash", { length: 256 }).notNull(),
   refreshToken: varchar("refresh_token", { length: 256 }),
   role: rolesEnum("role"),
