@@ -42,7 +42,7 @@ export const handleRegisterBus = async (
 
     const response = await db.insert(buses).values(newBus).returning();
     console.log(response);
-    return new SuccessResponse("BUS_ADDED", "Bus added to your fleet", {
+    return new SuccessResponse("SUCCESS", "Bus added to your fleet", {
       id: response[0].id,
       operator: authorisedUser?.operator?.tradeName,
       registrationPlate: response[0].registrationPlate,

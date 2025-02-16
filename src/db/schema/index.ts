@@ -17,6 +17,7 @@ import * as payments from "./payments";
 import * as transactions from "./transactions";
 import * as otpLogs from "./otpLogs";
 import * as otps from "./otps";
+import * as routes from "./routes";
 
 const schema = {
   ...buses,
@@ -37,7 +38,8 @@ const schema = {
   ...payments,
   ...transactions,
   ...otpLogs,
-  ...otps
+  ...otps,
+  ...routes
 };
 
 export default schema;

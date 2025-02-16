@@ -78,7 +78,7 @@ export const handleAcceptTicketer = async (
     });
 
     return new SuccessMsgResponse(
-      "INVITATION_ACCEPTED",
+      "SUCCESS",
       "You have now been assigned as a ticketer"
     ).send(res);
   } catch (error) {

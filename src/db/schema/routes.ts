@@ -1,9 +1,6 @@
-import {
-  integer,
-  pgTable,
-  serial,
-  varchar,
-} from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import { integer, pgTable, serial, varchar } from "drizzle-orm/pg-core";
+import { buses } from "./buses";
 
 export const routes = pgTable("routes", {
   id: serial("id").primaryKey(),
@@ -11,4 +8,6 @@ export const routes = pgTable("routes", {
   stops: integer("stops"), // Used to fetch fare values from the fare table
 });
 
-
+export const routesRelations = relations(routes, ({ one }) => ({
+  buses: one(buses),
+}));

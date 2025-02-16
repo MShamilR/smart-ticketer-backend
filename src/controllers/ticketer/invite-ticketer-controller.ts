@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { users, Roles } from "../../db/schema/users";
 import { invites } from "../../db/schema/invites";
 import { SuccessMsgResponse } from "../../core/api-response";
-import { ticketers } from "db/schema/ticketers";
+import { ticketers } from "../../db/schema/ticketers";
 import { inviteStatus } from "../../db/schema/invites";
 
 type NewInvite = typeof invites.$inferInsert;
@@ -38,7 +38,7 @@ export const handleInviteTicketer = async (
 
     await db.insert(invites).values(newInvite);
     return new SuccessMsgResponse(
-      "TICKETER_INVITED",
+      "SUCCESS",
       "Ticketer invitation has been sent to user"
     ).send(res);
   } catch (error) {

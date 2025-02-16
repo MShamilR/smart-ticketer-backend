@@ -4,6 +4,7 @@ import userRoute from "./routes/user-route";
 import authRoute from "./routes/auth-route";
 import busRoute from "./routes/bus-route";
 import tripRoute from "./routes/trip-route";
+import fareRoute from "./routes/fare-route";
 import {
   NotFoundError,
   ApiError,
@@ -33,6 +34,7 @@ publicRouter.use("/user", userRoute);
 // Authorization / Authenticated Routes
 authRouter.use("/", authRoute);
 authRouter.use("/bus", busRoute);
+authRouter.use("/fare", fareRoute);
 authRouter.use("/user", userRoute);
 authRouter.use("/trip", tripRoute);
 authRouter.use("/ticket", tripRoute);
