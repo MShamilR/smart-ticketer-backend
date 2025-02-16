@@ -9,6 +9,7 @@ import generateId from "../../utils/id-generator";
 import bcrypt from "bcryptjs";
 import createLogger from "../../utils/logger";
 import "dotenv/config";
+import { nanoid } from "nanoid";
 
 const logger = createLogger("user-controller");
 
@@ -56,6 +57,7 @@ export const handleCreateUser = async (
           firstName,
           lastName,
           email,
+          qrCode: nanoid(10),
           passwordHash: hashedPassword,
           role,
           creditBalance: "0.00",

@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import { ProtectedRequest } from "../../types/app-requests";
 import { db } from "../../db/setup";
 import { eq } from "drizzle-orm";
