@@ -27,13 +27,13 @@ export const handleInitiateTicket = async (
 ) => {
   try {
     const { id } = req.user!;
-    const terminal = req.params.terminal;
+    const qrCode = req.params.qrCode;
     const tripToken = req.headers["x-trip-token"] as string | undefined;
     if (!tripToken) {
       throw new BadRequestError("MISSING_TOKEN", "Missing Trip Token");
     }
     const tripInfo = verifyTripToken(id, tripToken);
-    const foundPassenger = await verifyPassengerByTerminal(terminal);
+    const foundPassenger = await verifyPassengerByQrCode(qrCode);
     const ticketToken = issueTicketToken(tripInfo, foundPassenger);
     const expiry = new Date(
       Date.now() + parseInt(process.env.TICKET_WINDOW_MINUTES!, 10) * 60 * 1000
@@ -91,9 +91,9 @@ const verifyTripToken = (id: number, tripToken: string): TripInfo => {
   }
 };
 
-const verifyPassengerByTerminal = async (terminal: string): Promise<User> => {
+const verifyPassengerByQrCode = async (qrCode: string): Promise<User> => {
   const foundPassenger = await db.query.users.findFirst({
-    where: eq(users.terminal, terminal),
+    where: eq(users.qrCode, qrCode),
   });
   if (!foundPassenger) {
     throw new BadRequestError("PASSENGER_UNKNOWN", "Invalid Passenger QR");

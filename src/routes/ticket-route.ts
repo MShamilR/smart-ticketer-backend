@@ -5,7 +5,7 @@ import { handleCompleteTicket } from "../controllers/ticket/complete-ticket-cont
 
 const router = express.Router();
 
-router.post("/initiate", authorize(["TICKETER"]), handleInitiateTicket);
-router.post("/complete", authorize(["TICKETER"]), handleCompleteTicket);
+router.post("/:qrCode/initiate", authorize(["TICKETER"]), handleInitiateTicket);
+router.post("/:qrCode/complete", authorize(["TICKETER"]), handleCompleteTicket);
 
 export default router;
