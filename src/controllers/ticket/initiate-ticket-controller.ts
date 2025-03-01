@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import { db } from "../../db/setup";
 import { eq } from "drizzle-orm";
 import "dotenv/config";
+import { redisClient } from "../../redis/config";
 
 type User = typeof users.$inferInsert;
 interface TripInfo {
@@ -20,6 +21,8 @@ interface TicketInfo {
   tripInfo: TripInfo;
 }
 
+// TODO: Move Redis actions to a util function
+
 export const handleInitiateTicket = async (
   req: ProtectedRequest,
   res: Response,
@@ -27,14 +30,35 @@ export const handleInitiateTicket = async (
 ) => {
   try {
     const { id } = req.user!;
-    const qrCode = req.params.qrCode;
+    const { qrCode } = req.params;
+    let foundPassengerId: Number | null = null;
+
     const tripToken = req.headers["x-trip-token"] as string | undefined;
     if (!tripToken) {
       throw new BadRequestError("MISSING_TOKEN", "Missing Trip Token");
     }
     const tripInfo = verifyTripToken(id, tripToken);
-    const foundPassenger = await verifyPassengerByQrCode(qrCode);
-    const ticketToken = issueTicketToken(tripInfo, foundPassenger);
+    try {
+      const cachedUserId = await redisClient.get(`QR:${qrCode}`);
+      if (cachedUserId) {
+        foundPassengerId = Number(cachedUserId);
+      }
+    } catch (error) {
+      console.error("Redis GET error:", error);
+    }
+
+    if (!foundPassengerId) {
+      foundPassengerId = await verifyPassengerByQrCode(qrCode);
+      try {
+        await redisClient.set(`QR:${qrCode}`, String(foundPassengerId), {
+          EX: Number(process.env.REDIS_TTL),
+        });
+      } catch (error) {
+        console.error("Redis SET error:", error);
+      }
+    }
+
+    const ticketToken = issueTicketToken(tripInfo, foundPassengerId!);
     const expiry = new Date(
       Date.now() + parseInt(process.env.TICKET_WINDOW_MINUTES!, 10) * 60 * 1000
     ).toISOString();
@@ -49,11 +73,11 @@ export const handleInitiateTicket = async (
   }
 };
 
-const issueTicketToken = (tripInfo: TripInfo, foundPassenger: User) => {
+const issueTicketToken = (tripInfo: TripInfo, foundPassengerId: Number) => {
   const ticketToken = jwt.sign(
     {
       ticketInfo: {
-        passengerId: foundPassenger.id,
+        passengerId: foundPassengerId,
         ...tripInfo,
       },
     },
@@ -91,7 +115,7 @@ const verifyTripToken = (id: number, tripToken: string): TripInfo => {
   }
 };
 
-const verifyPassengerByQrCode = async (qrCode: string): Promise<User> => {
+const verifyPassengerByQrCode = async (qrCode: string): Promise<Number> => {
   const foundPassenger = await db.query.users.findFirst({
     where: eq(users.qrCode, qrCode),
   });
@@ -100,5 +124,5 @@ const verifyPassengerByQrCode = async (qrCode: string): Promise<User> => {
   } else if (foundPassenger.isActive) {
     throw new BadRequestError("PASSENGER_INACTIVE", "Passenger is Inactive");
   }
-  return foundPassenger as User;
+  return foundPassenger.id;
 };

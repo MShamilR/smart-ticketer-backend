@@ -14,6 +14,7 @@ import {
 import "dotenv/config";
 import { configureSocket } from "./socket.io/config";
 import createLogger from "./utils/logger";
+import { connectRedis } from "./redis/config";
 
 const app = express();
 const server = createServer(app);
@@ -24,6 +25,8 @@ const logger = createLogger("index");
 configureSocket(server);
 
 app.use(express.json());
+
+connectRedis();
 
 const publicRouter = express.Router();
 const authRouter = express.Router();
