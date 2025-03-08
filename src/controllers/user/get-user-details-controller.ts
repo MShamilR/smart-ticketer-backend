@@ -11,7 +11,7 @@ import { ProtectedRequest } from "types/app-requests";
 import "dotenv/config";
 import { AuthFailureError } from "core/api-error";
 
-const logger = createLogger("user-controller");
+const logger = createLogger("get-user-details-controller");
 
 type User = typeof users.$inferInsert;
 type VerifiedEmail = typeof emails.$inferInsert;
@@ -23,6 +23,7 @@ export const handleGetUserDetails = async (
 ) => {
   try {
     const { id } = req.user!;
+    logger.info("Fetching user details", { userId: id });
 
     const authorisedUser = await db.query.users.findFirst({
       where: eq(users.id, id),
@@ -38,11 +39,15 @@ export const handleGetUserDetails = async (
       },
     });
 
-    if (!authorisedUser)
+    if (!authorisedUser) {
+      logger.warn("Unauthorized access attempt", { userId: id });
       throw new AuthFailureError(
         "INVALID_CREDENTIALS",
         "Please enter the correct password"
       );
+    }
+
+    logger.info("User details fetched successfully", { userId: id });
 
     const userDetails: UserDetailsResponse = {
       email: authorisedUser.email,
@@ -63,7 +68,10 @@ export const handleGetUserDetails = async (
     return new SuccessResponse(
       "SUCCESS",
       "User details fetched",
-      authorisedUser
+      userDetails
     ).send(res);
-  } catch (error) {}
+  } catch (error) {
+    logger.error("Error fetching user details", { error });
+    next(error);
+  }
 };

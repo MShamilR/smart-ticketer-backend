@@ -11,7 +11,7 @@ import createLogger from "../../utils/logger";
 import "dotenv/config";
 import { nanoid } from "nanoid";
 
-const logger = createLogger("user-controller");
+const logger = createLogger("create-user-controller");
 
 type User = typeof users.$inferInsert;
 

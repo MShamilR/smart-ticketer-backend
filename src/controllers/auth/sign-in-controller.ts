@@ -10,7 +10,7 @@ import "dotenv/config";
 import SignInRequest from "interfaces/requests/sign-in-request";
 import createLogger from "../../utils/logger";
 
-const logger = createLogger("auth-controller");
+const logger = createLogger("sign-in-controller");
 
 export const handleSignIn = async (
   req: Request,
