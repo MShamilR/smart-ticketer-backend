@@ -69,8 +69,8 @@ export class AuthFailureError extends ApiError {
 }
 
 export class InternalError extends ApiError {
-  constructor(message = "Internal error") {
-    super(ErrorType.INTERNAL, message);
+  constructor(code = "INTERNAL_ERROR", message = "Internal Error") {
+    super(ErrorType.INTERNAL, code, message);
   }
 }
 

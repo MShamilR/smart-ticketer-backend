@@ -5,9 +5,7 @@ import { db } from "../../db/setup";
 import { users } from "../../db/schema/users";
 import { emails } from "../../db/schema/emails";
 import { BadRequestError } from "../../core/api-error";
-import {
-  SuccessMsgResponse,
-} from "../../core/api-response";
+import { SuccessMsgResponse } from "../../core/api-response";
 import * as EmailValidator from "email-validator";
 import createLogger from "../../utils/logger";
 import "dotenv/config";
@@ -41,14 +39,14 @@ export const handleSignUpEmail = async (
     }
 
     // TEST
-    TwoFactorAuthManager.dispatchEmail(email);
+    await TwoFactorAuthManager.dispatchEmail(email);
 
     // dispatchVerificationEmail(email);
     logger.info("Verification email dispatched", { email });
 
     return new SuccessMsgResponse(
-      "VERIFICATION_LINK_DISPATCHED",
-      "Click on the link to proceed"
+      "VERIFICATION_OTP_DISPATCHED",
+      "Use the otp to verify you email"
     ).send(res);
   } catch (error: any) {
     logger.error("Unable to validate email ", {

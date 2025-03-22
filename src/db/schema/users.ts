@@ -49,7 +49,7 @@ export const users = pgTable("users", {
   creditBalance: numeric("credit_balance", { precision: 10, scale: 2 }),
   isActive: boolean("is_active"),
   isIncomplete: boolean("is_incomplete"),
-  operatorId: integer("operator_id"),
+  operatorId: integer("operator_id").references(() => operators.id),
 });
 
 // export const usersRelations = relations(users, ({ many }) => ({
@@ -58,8 +58,14 @@ export const users = pgTable("users", {
 // }));
 
 export const usersRelations = relations(users, ({ one }) => ({
-  ticketer: one(ticketers),
-  operator: one(operators),
+  ticketer: one(ticketers, {
+    fields: [users.id], // users.id will link to ticketers.userId
+    references: [ticketers.userId],
+  }),
+  operator: one(operators, {
+    fields: [users.operatorId],
+    references: [operators.id],
+  }),
   glAccount: one(glAccounts, {
     fields: [users.glAccountId],
     references: [glAccounts.id],

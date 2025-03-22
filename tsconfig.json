@@ -13,6 +13,9 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
+    "paths": {
+      "*": ["*"]
+    }
   },
   "include": ["src/**/*.ts"]
 }

@@ -80,7 +80,7 @@ export default class TwoFactorAuthManager {
       "..",
       "..",
       "templates",
-      "emailVerification.hbs"
+      "email-verification.hbs"
     );
 
     const source = fs.readFileSync(templatePath, "utf-8");

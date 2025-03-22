@@ -1,3 +1,4 @@
+import { buses } from "./../../db/schema/buses";
 import { Decimal } from "decimal.js";
 import { UserDetailsResponse } from "./../../interfaces/responses/user-detail-response";
 import { Response, NextFunction } from "express";
@@ -7,9 +8,9 @@ import { users } from "../../db/schema/users";
 import { emails } from "../../db/schema/emails";
 import { SuccessResponse } from "../../core/api-response";
 import createLogger from "../../utils/logger";
-import { ProtectedRequest } from "types/app-requests";
+import { ProtectedRequest } from "../../types/app-requests";
+import { AuthFailureError } from "../../core/api-error";
 import "dotenv/config";
-import { AuthFailureError } from "core/api-error";
 
 const logger = createLogger("get-user-details-controller");
 
@@ -31,9 +32,10 @@ export const handleGetUserDetails = async (
         operator: true,
         ticketer: {
           with: {
-            bus: {
-              with: { operators: true },
-            },
+            bus: true,
+            // bus: {
+            //   with: { operators: true },
+            // },
           },
         },
       },
@@ -56,13 +58,13 @@ export const handleGetUserDetails = async (
       lastName: authorisedUser.lastName!,
       creditBalance: new Decimal(authorisedUser.creditBalance!),
       qrCode: authorisedUser.qrCode,
-      ticketerDetails:
-        authorisedUser.ticketer && authorisedUser.ticketer.bus
-          ? {
-              tradeName: authorisedUser.ticketer.bus.operators?.tradeName!,
-              activeSession: null, // TODO: Implement active session logic
-            }
-          : null,
+      ticketerDetails: null,
+      // authorisedUser.ticketer && authorisedUser.ticketer.bus
+      //   ? {
+      //       tradeName: authorisedUser.ticketer.bus.operators?.tradeName!,
+      //       activeSession: null, // TODO: Implement active session logic
+      //     }
+      //   : null,
     };
 
     return new SuccessResponse(
