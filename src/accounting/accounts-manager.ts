@@ -91,11 +91,33 @@ export default class AccountsManager {
     transaction: Transaction,
     tx: any
   ) {
+    // Validate that debits equal credits
+    this.validateBalance(journalEntries);
+
     await Promise.all(
       journalEntries.map((journalEntry) =>
         GLEntryCreator.createGLEntry(journalEntry, transaction, tx)
       )
     );
+  }
+
+  private static validateBalance(journalEntries: JournalEntry[]): void {
+    let totalDebits = new Decimal(0);
+    let totalCredits = new Decimal(0);
+
+    journalEntries.forEach((entry) => {
+      if (entry.type === "DEBIT") {
+        totalDebits = totalDebits.add(entry.amount);
+      } else if (entry.type === "CREDIT") {
+        totalCredits = totalCredits.add(entry.amount);
+      }
+    });
+
+    if (!totalDebits.equals(totalCredits)) {
+      throw new Error(
+        `Journal entries do not balance. Debits: ${totalDebits.toString()}, Credits: ${totalCredits.toString()}`
+      );
+    }
   }
 
   private static getUserGLAccountId(userId: number): string {

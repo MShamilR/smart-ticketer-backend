@@ -15,12 +15,18 @@ export default class AccountsCalculation {
   private static processingFee = new Decimal(0);
   private static totalAmount = new Decimal(0);
 
-  private static entries: JournalEntry[];
+  private static entries: JournalEntry[] = [];
 
   public static getCreditsPurchase(
     invoiceItems: InvoiceItem[],
     type: PaymentType
   ): JournalEntry[] {
+    // Reset state
+    this.entries = [];
+    this.topupAmount = new Decimal(0);
+    this.processingFee = new Decimal(0);
+    this.totalAmount = new Decimal(0);
+
     this.calculateCharges(invoiceItems, type);
 
     this.addJournalEntry(
@@ -28,6 +34,13 @@ export default class AccountsCalculation {
       "DEBIT",
       this.topupAmount,
       "Credit Topup for User"
+    );
+
+    this.addJournalEntry(
+      GL_ACCOUNTS.CASH,
+      "CREDIT",
+      this.totalAmount,
+      "Cash received from user"
     );
 
     this.addJournalEntry(
@@ -44,16 +57,22 @@ export default class AccountsCalculation {
     userGLAccountId: string,
     amount: Decimal
   ): JournalEntry[] {
+    // Reset state
+    this.entries = [];
+    this.topupAmount = new Decimal(0);
+    this.processingFee = new Decimal(0);
+    this.totalAmount = new Decimal(0);
+
     this.addJournalEntry(
       GL_ACCOUNTS.USER_CREDITS,
-      "DEBIT",
+      "CREDIT",
       amount,
       "Credit Consume By User" // Todo: Add User Id
     );
 
     this.addJournalEntry(
       userGLAccountId,
-      "CREDIT",
+      "DEBIT",
       amount,
       "Credit Consume" // Todo: Add Trip Id
     );
@@ -80,10 +99,10 @@ export default class AccountsCalculation {
     switch (type) {
       case "PURCHASE_ITEM":
       case "CHARGE":
-        this.totalAmount.add(amount);
+        this.totalAmount = this.totalAmount.add(amount);
         break;
       case "ADDON":
-        this.totalAmount.minus(amount);
+        this.totalAmount = this.totalAmount.minus(amount);
         break;
       default:
         break;
@@ -93,7 +112,7 @@ export default class AccountsCalculation {
   private static setCharges(amount: Decimal, type: string): void {
     switch (type) {
       case "PURCHASE_ITEM":
-        this.topupAmount.add(amount);
+        this.topupAmount = this.topupAmount.add(amount);
         break;
       default:
         break;

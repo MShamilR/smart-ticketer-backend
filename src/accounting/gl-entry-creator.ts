@@ -12,7 +12,7 @@ type GLEntry = typeof glEntries.$inferInsert;
 export default class GLEntryCreator {
   private static DEBIT = "DEBIT";
   private static CREDIT = "CREDIT";
-  private static LIABILITY = "LIABILIY";
+  private static LIABILITY = "LIABILITY";
   private static INCOME = "INCOME";
 
   public static async createGLEntry(

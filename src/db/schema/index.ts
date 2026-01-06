@@ -39,7 +39,7 @@ const schema = {
   ...transactions,
   ...otpLogs,
   ...otps,
-  ...routes
+  ...routes,
 };
 
 export default schema;
